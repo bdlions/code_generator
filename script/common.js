@@ -68,7 +68,7 @@ function sessionTrackingTimerMethod()
     }
     else
     {
-        alert("clientEndOperationCounter:"+clientEndOperationCounter);
+        //alert("clientEndOperationCounter:"+clientEndOperationCounter);
         
         clientEndOperationCounter = 0;
         $.ajax({
@@ -77,7 +77,7 @@ function sessionTrackingTimerMethod()
             data: {                
             },
             success: function () { 
-                alert("Server alive.");
+                //alert("Server alive.");
             }
         });
         //call ajax function

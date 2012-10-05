@@ -388,8 +388,16 @@ class Auth extends CI_Controller
             $forgotten = $this->ion_auth->forgotten_user_name($user_info);
             if ($forgotten)
             { //if there were no errors
-                $this->session->set_flashdata('message', $this->ion_auth->messages());
-                redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+                $this->session->set_flashdata('message', "");
+                //redirect("auth/login", 'refresh');
+                //set any errors and display the form
+                $this->data['user_email'] = $user_info['email'];
+                $base = base_url();
+                $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
+                $this->template->set('css', $css);
+                $this->template->set('menu_bar', 'design/menu_bar_external_user');
+                $this->template->set('main_content', "auth/forgot_user_name_successful");
+                $this->template->load("default_template", 'auth/forgot_user_name_successful', $this->data);
             }
             else
             {

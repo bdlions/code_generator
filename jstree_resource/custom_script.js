@@ -961,7 +961,7 @@ $(function ()
                     },
                     success: function () { 
                         lastOperationExecutionTimeInSecond = 0;
-                        alert("Server alive.");
+                        //alert("Server alive.");
                     }
                 });
                 $( this ).dialog( "close" );
