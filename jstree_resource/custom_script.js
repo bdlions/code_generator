@@ -23,7 +23,11 @@ $(function ()
     $("#logical_connector_part_of_conditioon_accordion").accordion();
     //accordion initialization ends
     
-    $("#add_bracket_in_condition_div_selected_items").selectable();
+    $("#add_bracket_in_condition_div_selected_items").selectable({
+        stop: function (e, ui) {
+            //alert("Hi. I am selected.");
+        }
+    });
 
     $("#logical_connector_removing_condition_selected_item").selectable(
     {
@@ -969,6 +973,62 @@ $(function ()
         }
     });
     
+    $( "#condition_boolean_middle_part_change_confirmation_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 500,
+        modal: true,
+        title: 'Warning',
+        //setting buttons
+        buttons:
+        {
+            "No": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Yes": function()
+            {                
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+                updateConditionBooleanVariableMiddleOrRightPart();
+            }            
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
+    $( "#condition_boolean_right_part_change_confirmation_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 500,
+        modal: true,
+        title: 'Warning',
+        //setting buttons
+        buttons:
+        {
+            "No": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Yes": function()
+            {                
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+                updateConditionBooleanVariableMiddleOrRightPart();
+            }            
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
 });
 
 function customTextChange(child_node_name, parent_node_name, haslimit, lower_limit, upper_limit, input_type)
@@ -1238,6 +1298,33 @@ function manageExpression($href) {
     }, 100);
     document.cookie = "selectedParent" + "=" + input_tag.getAttribute("value");
     document.cookie = "selectedChild" + "=" + input_tag.getAttribute("name");
+    
+    if(input_tag.getAttribute("id") == "booleancomparison")
+    {
+        if(input_tag.getAttribute("name") == "is equal to")
+        {
+            document.getElementById("lable_condition_boolean_middle_part_change_confirmation").innerHTML = "Do you want to convert it to 'is not equal to'?";
+        }
+        else if(input_tag.getAttribute("name") == "is not equal to")
+        {
+            document.getElementById("lable_condition_boolean_middle_part_change_confirmation").innerHTML = "Do you want to convert it to 'is equal to'?";
+        }
+        $('#condition_boolean_middle_part_change_confirmation_div').dialog('open');
+    }
+    
+    if(input_tag.getAttribute("id") == "booleanvalue")
+    {
+        if(input_tag.getAttribute("name") == "true")
+        {
+            document.getElementById("lable_condition_boolean_right_part_change_confirmation").innerHTML = "Do you want to convert it to 'false'?";
+        }
+        else if(input_tag.getAttribute("name") == "false")
+        {
+            document.getElementById("lable_condition_boolean_right_part_change_confirmation").innerHTML = "Do you want to convert it to 'true'?";
+        }
+        $('#condition_boolean_right_part_change_confirmation_div').dialog('open');
+    }
+    
     return false;
 }
 
@@ -2083,4 +2170,77 @@ function reset_left_panel_content()
             $(this).attr("class",$(this).attr("class").replace(" ui-selectee", ""));            
         });
      });
+}
+
+function updateConditionBooleanVariableMiddleOrRightPart()
+{
+    var selected_id = "";
+    var current_anchor_text = "";
+    var current_anchor_updated_text = "";
+    var current_anchor_updated_code = "";
+    $("a", $("#changing_stmt")).each(function () 
+    {
+        if ($(this).attr("class")) {
+            //updating expression in natural language panel
+            selected_id = $(this).attr("id");
+            
+            current_anchor_text = $(this).text().trim();
+            if(current_anchor_text == "true")
+            {
+                current_anchor_updated_text = "false";
+                current_anchor_updated_code = "false";
+            }
+            else if(current_anchor_text == "false")
+            {
+                current_anchor_updated_text = "true";
+                current_anchor_updated_code = "true";
+            }
+            else if(current_anchor_text == "is equal to")
+            {
+                current_anchor_updated_text = "is not equal to";
+                current_anchor_updated_code = " != ";
+            }
+            else if(current_anchor_text == "is not equal to")
+            {
+                current_anchor_updated_text = "is equal to";
+                current_anchor_updated_code = " == ";
+            }
+            
+            var $custom_anchor = $(this);
+            $custom_anchor.html($custom_anchor.html().substring(0,$custom_anchor.html().lastIndexOf(">")+1)+current_anchor_updated_text);
+            $("input", $(this)).each(function () {
+                $(this).attr("name", current_anchor_updated_text);
+
+            });
+            //updating expression on left panel
+            $("a", $("#selectable .ui-selected")).each(function ()
+            {
+                if($(this).attr("id") == selected_id){
+                    $(this).html($custom_anchor.html());
+                }
+                $(this).removeAttr("onclick");
+                $(this).removeAttr("class");
+            });
+        }
+    });
+    //updating code panel
+    $("a", $("#code_stmt")).each(function ()
+    {
+        if ($(this).attr("id") == selected_id)
+        {
+            $(this).text(current_anchor_updated_code);                               
+            //updating code on left panel
+            $("div",  $('#selectable .ui-selected')).each(function ()
+            {
+                $("input", $(this)).each(function () {
+                    if($(this).attr("id") == selected_id){
+                        $(this).removeAttr("value");
+                        $(this).attr("value",updated_anchor_text);
+                    }
+                });
+            });
+            //updating parameters table
+            document.getElementById("parameters_table").innerHTML = "";
+        }
+    });
 }

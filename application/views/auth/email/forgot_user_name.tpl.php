@@ -1,7 +1,5 @@
-<?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-?>
+<html>
+<body>
+	<h1>Your user name is : <?php echo $user_name;?></h1>	
+</body>
+</html>

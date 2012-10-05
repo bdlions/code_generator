@@ -143,6 +143,35 @@ class Ion_auth
 			return FALSE;
 		}
 	}
+        
+        /*
+         * forgotten user name feature
+         * @return void
+         */
+        public function forgotten_user_name($user_info)
+	{
+            $data = array(
+                'user_name' => $user_info['username']
+            );
+            $message = $this->ci->load->view($this->ci->config->item('email_templates', 'ion_auth').$this->ci->config->item('email_forgot_user_name', 'ion_auth'), $data, true);
+            $this->ci->email->clear();
+            $this->ci->email->set_newline("\r\n");
+            $this->ci->email->from($this->ci->config->item('admin_email', 'ion_auth'), $this->ci->config->item('site_title', 'ion_auth'));
+            $this->ci->email->to($user->email);
+            $this->ci->email->subject($this->ci->config->item('site_title', 'ion_auth') . ' - Forgot User Name');
+            $this->ci->email->message($message);
+
+            if ($this->ci->email->send())
+            {
+                $this->set_message('forgot_user_name_successful');
+                return TRUE;
+            }
+            else
+            {
+                $this->set_error('forgot_user_name_unsuccessful');
+                return FALSE;
+            }
+	}
 
 	/**
 	 * forgotten_password_complete

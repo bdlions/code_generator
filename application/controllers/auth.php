@@ -385,6 +385,17 @@ class Auth extends CI_Controller
         {
             $user_infos = $this->ion_auth->where('users.email',$email)->users()->result_array();
             $user_info = $user_infos[0];
+            $forgotten = $this->ion_auth->forgotten_user_name($user_info);
+            if ($forgotten)
+            { //if there were no errors
+                $this->session->set_flashdata('message', $this->ion_auth->messages());
+                redirect("auth/login", 'refresh'); //we should display a confirmation page here instead of the login page
+            }
+            else
+            {
+                $this->session->set_flashdata('message', $this->ion_auth->errors());
+                redirect("auth/forgot_user_name", 'refresh');
+            }
         }
         else
         {

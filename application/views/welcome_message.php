@@ -835,3 +835,21 @@ $(document).ready(function()
         </tr>
     </table>
 </div>
+
+<div id="condition_boolean_middle_part_change_confirmation_div" >
+    <table width="100%" border="1" style="border-collapse:collapse;">
+        <tr>
+            <td><label id="lable_condition_boolean_middle_part_change_confirmation"></label></td>
+            
+        </tr>
+    </table>
+</div>
+
+<div id="condition_boolean_right_part_change_confirmation_div" >
+    <table width="100%" border="1" style="border-collapse:collapse;">
+        <tr>
+            <td><label id="lable_condition_boolean_right_part_change_confirmation"></label></td>
+            
+        </tr>
+    </table>
+</div>

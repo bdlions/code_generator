@@ -6,8 +6,8 @@ var boolean_variable_natural_language_panel_comparison_not_equal = "is not equal
 var boolean_variable_code_panel_comparison_equal = " == ";
 var boolean_variable_code_panel_comparison_not_equal = " != ";
 
-var timerMethodExecutionTimeIntervalInMiliSecond = 30000;
-var idleTimeDurationCheckedValueInSecond = 25; 
+var timerMethodExecutionTimeIntervalInMiliSecond = 600000;
+var idleTimeDurationCheckedValueInSecond = 565; 
 var clientEndOperationCounter = 0;
 var lastOperationExecutionTimeInSecond = 0;
 var sessionRenewConfirmed = true;
