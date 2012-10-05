@@ -39,6 +39,7 @@ function load_xml()
                     var parameter_object = new Parameter();
                     parameter_object.setName($(this).find("name").text());
                     parameter_object.setType($(this).find("type").text());
+                    parameter_object.setAllowVar($(this).find("allowvar").text());
                     parameter_object.setDefaultValue($(this).find("default").text());
                     parameter_object.setAllowedValues(new Array());
                     parameter_object.setInterval(new Array());

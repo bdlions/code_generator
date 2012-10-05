@@ -1,4 +1,5 @@
 var project_variable_list = new Array();
+var server_base_url = "";
 var indentation_space_length = 5;
 var indentation_spaces = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 var boolean_variable_natural_language_panel_comparison_equal = "is equal to";
@@ -6,11 +7,17 @@ var boolean_variable_natural_language_panel_comparison_not_equal = "is not equal
 var boolean_variable_code_panel_comparison_equal = " == ";
 var boolean_variable_code_panel_comparison_not_equal = " != ";
 
-var timerMethodExecutionTimeIntervalInMiliSecond = 600000;
-var idleTimeDurationCheckedValueInSecond = 565; 
+var timerMethodExecutionTimeIntervalInMiliSecond = 30000;
+var idleTimeDurationCheckedValueInSecond = 568; 
 var clientEndOperationCounter = 0;
 var lastOperationExecutionTimeInSecond = 0;
 var sessionRenewConfirmed = true;
+
+
+function set_server_base_url(base_url)
+{
+    server_base_url = base_url;
+}
 
 /*
  * This method stores project variable list
@@ -64,7 +71,11 @@ function sessionTrackingTimerMethod()
                 $('#log_out_warning_div').dialog('open');
             }            
             //alert("Your sesssion will be expired within a minute if you are idle.");
-        }        
+        }  
+        if(idleTimeDuration > idleTimeDurationCheckedValueInSecond + 30)
+        {
+            window.location.replace(server_base_url);
+        }
     }
     else
     {

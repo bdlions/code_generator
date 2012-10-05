@@ -17,6 +17,7 @@ $(document).ready(function()
     set_project_id_list(user_project_id_list);
     
     var custom_variable_list = JSON.parse('<?php 
+        $variables = array();
         foreach ($custom_variables as $cv)
         {
             $variable =array("variable_id" => $cv->variable_id, "variable_name" => $cv->variable_name, "variable_type" => $cv->variable_type, "variable_value" => $cv->variable_value);
@@ -25,6 +26,9 @@ $(document).ready(function()
         echo json_encode(array('variable_list' => $variables));
         ?>');
     set_project_variables(custom_variable_list.variable_list); 
+    
+    var base_url = '<?php echo $base_url?>';
+    set_server_base_url(base_url);
     
     trackUserOperation();
 });
@@ -651,9 +655,6 @@ $(document).ready(function()
     <ol id="add_bracket_in_condition_div_selected_items" style="font-size:8pt;">
        
     </ol>
-
-    <button id="button_add_bracket_in_condition_ok" onclick="button_add_bracket_in_condition_ok_pressed()" type="button">Ok</button>
-    <button id="button_add_bracket_in_condition_cancel" onclick="button_add_bracket_in_condition_cancel_pressed()" type="button">Cancel</button>
 </div>
 <!-- end of logical connector div modal -->
 

@@ -15,6 +15,8 @@ function Parameter()
     var allowed_values;
     //interval of a parameter in xml file
     var interval;
+    //variables to be allowed or not for this parameter
+    var allow_var;
     Parameter.prototype.setName = function(nm)
     {
         this.name = nm;        
@@ -54,6 +56,14 @@ function Parameter()
     Parameter.prototype.getInterval = function()
     {
         return this.interval;        
+    }
+    Parameter.prototype.setAllowVar = function(avar)
+    {
+        this.allow_var = avar;        
+    }
+    Parameter.prototype.getAllowVar = function()
+    {
+        return this.allow_var;        
     }
 }
 

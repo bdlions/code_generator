@@ -25,7 +25,32 @@ $(function ()
     
     $("#add_bracket_in_condition_div_selected_items").selectable({
         stop: function (e, ui) {
-            //alert("Hi. I am selected.");
+            var total_selected_items = 0;
+            var first_selected_item_text = "";
+            var second_selected_item_text ="";
+            $("#add_bracket_in_condition_div_selected_items li").each(function(){
+                if($(this).attr("class") == "ui-widget-content ui-selected")
+                {
+                    total_selected_items++;   
+                    if(total_selected_items == 1)
+                    {
+                        first_selected_item_text = $(this).text();
+                    }
+                    else if(total_selected_items == 2)
+                    {
+                        second_selected_item_text = $(this).text();
+                    }
+                }
+                
+            });
+            if(total_selected_items == 1)
+            {
+                alert("'(' will be added before '"+first_selected_item_text+"'");
+            }
+            else if(total_selected_items == 2)
+            {
+                alert("'(' will be added before '"+first_selected_item_text+"' and ')' will be added after '"+second_selected_item_text+"'");
+            }
         }
     });
 
@@ -584,16 +609,6 @@ $(function ()
         $.unblockUI();
     });
 
-    var $addBracketInConditionDivDialog = $('#add_bracket_in_condition_div').dialog({
-        height: 280,
-        width: 440,
-        autoOpen: false,
-        title: 'Selected condition'
-    });
-    $('div#add_bracket_in_condition_div').bind('dialogclose', function(event) {
-        $.unblockUI();
-    });
-    
     /*var $logicalConnectorPartOfConditionDivDialog = $('#logical_connector_part_of_condition_div').dialog({
         modal: true,
         width: 210,
@@ -950,6 +965,7 @@ $(function ()
             {
                 sessionRenewConfirmed = false;
                 $( this ).dialog( "close" );
+                window.location.replace(server_base_url);
             },
             "Yes": function()
             {                
@@ -1021,6 +1037,33 @@ $(function ()
                 updateClientEndOperationCounter();
                 $( this ).dialog( "close" );
                 updateConditionBooleanVariableMiddleOrRightPart();
+            }            
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
+    $( "#add_bracket_in_condition_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 500,
+        modal: true,
+        title: 'Selected Condition',
+        //setting buttons
+        buttons:
+        {
+            "Cancel": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Ok": function()
+            {                
+                updateClientEndOperationCounter();
+                button_add_bracket_in_condition_ok_pressed();                
             }            
         },
         close: function()
@@ -1765,6 +1808,13 @@ function button_add_bracket_in_condition_ok_pressed()
                         is_start_comparison = true;
                     }
                     previous_item_check = false;
+                    $("input", $(this)).each(function ()
+                    {
+                        if($(this).attr("value") == "booleancomparison")
+                        {
+                            is_start_comparison = true;
+                        }                
+                    });
                 }
                 else if(second_anchor_id == "")
                 {
@@ -1777,6 +1827,13 @@ function button_add_bracket_in_condition_ok_pressed()
                         is_end_comparison = true;
                     }
                     next_item_check = true;
+                    $("input", $(this)).each(function ()
+                    {
+                        if($(this).attr("value") == "booleancomparison")
+                        {
+                            is_end_comparison = true;
+                        }                
+                    });
                 }
                 else
                 {
@@ -1961,7 +2018,6 @@ function button_add_bracket_in_condition_ok_pressed()
     $("#selectable .ui-selected").html($left_panel_anchor_list);
     
     
-    $.unblockUI();
     $('#add_bracket_in_condition_div').dialog('close');
 }
 

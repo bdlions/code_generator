@@ -93,6 +93,7 @@
 					<value>EUR</value>
 				</allowedvalues>
 				<default>USA</default>
+				<allowvar>No</allowvar>
 			</parameter>
 			<parameter>
 				<name>color</name>
@@ -103,6 +104,7 @@
 					<value>Green</value>
 				</allowedvalues>
 				<default>White</default>
+				<allowvar>No</allowvar>
 			</parameter>
 			<parameter>
 				<name>dateborn</name>
@@ -112,6 +114,7 @@
 					<upperlimit>2012</upperlimit>
 				</interval>
 				<default>1960</default>
+				<allowvar>Yes</allowvar>
 			</parameter>
 		</parameters>
 	</feature>
@@ -130,6 +133,7 @@
 					<upperlimit>8.0</upperlimit>
 				</interval>
 				<default>5.1</default>
+				<allowvar>Yes</allowvar>
 			</parameter>			
 		</parameters>
 	</feature>
@@ -149,6 +153,7 @@
 					<value>Wednesday</value>
 				</allowedvalues>
 				<default>Monday</default>
+				<allowvar>No</allowvar>
 			</parameter>			
 		</parameters>
 	</feature>
@@ -168,6 +173,7 @@
 					<value>Wednesday</value>
 				</allowedvalues>
 				<default>Monday</default>
+				<allowvar>No</allowvar>
 			</parameter>
 			<parameter>
 				<name>hour</name>
@@ -177,6 +183,7 @@
 					<upperlimit>24</upperlimit>
 				</interval>
 				<default>20</default>
+				<allowvar>Yes</allowvar>
 			</parameter>			
 		</parameters>
 	</feature>        

@@ -142,6 +142,8 @@ class Welcome extends CI_Controller
         $this->data['user_project_name_list'] = $user_project_name_list;
         $this->data['user_project_id_list'] = $user_project_id_list;
         
+        $this->data['base_url'] = base_url();
+        
         //replacing project_content_backup by project_content
         $data = array(
                 'project_content_backup' => $selected_project[0]->project_content
@@ -411,192 +413,11 @@ class Welcome extends CI_Controller
         //creating the project
         if ($this->form_validation->run() == true && ($project_id = $this->ion_auth->create_project($additional_data)))
         { 
-            $project_configuration = '<?xml version="1.0"?>
-<features>
-	<feature>
-		<options>number</options>
-		<optionstype>Constant</optionstype>
-		<natural>$value</natural>
-		<code>$value</code>
-		<help>http://www.help.com/constant</help>
-		<parameters>
-			<parameter>
-				<name>value</name>
-				<type>INTEGER</type>
-				<default>0</default>
-			</parameter>
-		</parameters>
-	</feature>
-	<feature>
-		<options>number</options>
-		<optionstype>DecimalConstant</optionstype>
-		<natural>$value</natural>
-		<code>$value</code>
-		<help>http://www.help.com/decimal</help>
-		<parameters>
-			<parameter>
-				<name>value</name>
-				<type>REAL</type>
-				<default>0.0</default>
-			</parameter>
-		</parameters>
-	</feature>
-	<feature>
-		<options>comparison</options>
-		<optionstype>HigherThan</optionstype>
-		<natural> is higher than </natural>
-		<code> &gt; </code>
-		<help>http://www.help.com/higherThan</help>		
-	</feature>
-	<feature>
-		<options>comparison</options>
-		<optionstype>LowerThan</optionstype>
-		<natural> is lower than </natural>
-		<code> &lt; </code>
-		<help></help>		
-	</feature>
-	<feature>
-		<options>comparison</options>
-		<optionstype>HigherThanOrEqualTo</optionstype>
-		<natural> is higher than or equal to </natural>
-		<code> &gt;= </code>
-		<help></help>		
-	</feature>
-	<feature>
-		<options>comparison</options>
-		<optionstype>LowerThanOrEqualTo</optionstype>
-		<natural> is lower than or equal to </natural>
-		<code> &lt;= </code>
-		<help></help>		
-	</feature>
-	<feature>
-		<options>comparison</options>
-		<optionstype>EqualTo</optionstype>
-		<natural> is equal to </natural>
-		<code> == </code>
-		<help></help>		
-	</feature>
-	<feature>
-		<options>basicfunction</options>
-		<optionstype>UserAge</optionstype>
-		<natural>User Age $p years ago </natural>
-		<code>Age[$p]</code>
-		<help>http://www.help.com/age</help>
-		<parameters>
-			<parameter>
-				<name>p</name>
-				<type>INTEGER</type>
-				<default>0</default>
-			</parameter>
-		</parameters>
-	</feature>
-	<feature>
-		<options>advancedfunction</options>
-		<optionstype>born</optionstype>
-		<natural>Born in Year $dateborn</natural>
-		<code>AdvancedAge($country, $color, $dateborn)</code>
-		<help>http://www.help.com/born</help>
-		<parameters>
-			<parameter>
-				<name>country</name>
-				<type>text</type>
-				<allowedvalues>
-					<value>USA</value>
-					<value>CAN</value>
-					<value>EUR</value>
-				</allowedvalues>
-				<default>USA</default>
-			</parameter>
-			<parameter>
-				<name>color</name>
-				<type>text</type>
-				<allowedvalues>
-					<value>White</value>
-					<value>Black</value>
-					<value>Green</value>
-				</allowedvalues>
-				<default>White</default>
-			</parameter>
-			<parameter>
-				<name>dateborn</name>
-				<type>INTEGER</type>
-				<interval>
-					<lowerlimit>1950</lowerlimit>
-					<upperlimit>2012</upperlimit>
-				</interval>
-				<default>1960</default>
-			</parameter>
-		</parameters>
-	</feature>
-	<feature>
-		<options>advancedfunction</options>
-		<optionstype>height</optionstype>
-		<natural>User Height of $heig</natural>
-		<code>Height($heig)</code>
-		<help></help>
-		<parameters>
-			<parameter>
-				<name>heig</name>
-				<type>REAL</type>
-				<interval>
-					<lowerlimit>4.0</lowerlimit>
-					<upperlimit>8.0</upperlimit>
-				</interval>
-				<default>5.1</default>
-			</parameter>			
-		</parameters>
-	</feature>
-	<feature>
-		<options>action</options>
-		<optionstype>run</optionstype>
-		<natural>run on $day</natural>
-		<code>Run($day)</code>
-		<help></help>
-		<parameters>
-			<parameter>
-				<name>day</name>
-				<type>text</type>
-				<allowedvalues>
-					<value>Monday</value>
-					<value>Tuesday</value>
-					<value>Wednesday</value>
-				</allowedvalues>
-				<default>Monday</default>
-			</parameter>			
-		</parameters>
-	</feature>
-	<feature>
-		<options>action</options>
-		<optionstype>sleep</optionstype>
-		<natural>sleep on $day at $hour</natural>
-		<code>Sleep($day,$hour)</code>
-		<help></help>
-		<parameters>
-			<parameter>
-				<name>day</name>
-				<type>text</type>
-				<allowedvalues>
-					<value>Monday</value>
-					<value>Tuesday</value>
-					<value>Wednesday</value>
-				</allowedvalues>
-				<default>Monday</default>
-			</parameter>			
-		</parameters>
-		<parameters>
-			<parameter>
-				<name>hour</name>
-				<type>INTEGER</type>
-				<allowedvalues></allowedvalues>
-				<interval>
-					<lowerlimit>0</lowerlimit>
-					<upperlimit>24</upperlimit>
-				</interval>
-				<default>20</default>
-			</parameter>			
-		</parameters>
-	</feature>        
-</features>';
+            $configuration_file_path = "./xml/features.xml";
+            $project_configuration = "";
+            if (file_exists($configuration_file_path)) {
+                $project_configuration = file_get_contents($configuration_file_path);                
+            }
             //storing feature xml file for this project
             $file_path = "./xml/".$project_id.".xml";
             if ( ! write_file($file_path, $project_configuration))

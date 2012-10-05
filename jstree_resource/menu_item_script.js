@@ -318,12 +318,6 @@ function add_brackets()
         $("input", $(this)).each(function () {
             if($(this).attr("name") == "condition")
             {
-                //blocking current window before rendering modal window
-                $.blockUI({
-                    message: '',
-                    theme: false,
-                    baseZ: 500
-                 });
                 //opening logical connector div modal window
                 $('#add_bracket_in_condition_div').dialog('open');
                 var selected_anchor_list = "";
