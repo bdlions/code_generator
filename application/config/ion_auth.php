@@ -109,25 +109,25 @@
 
 	/**
 	 * Folder where email templates are stored.
-         * Default : auth/
+     * Default : auth/
 	 **/
 	$config['email_templates']     = 'auth/email/';
 	
 	/**
 	 * activate Account Email Template
-         * Default : activate.tpl.php
+     * Default : activate.tpl.php
 	 **/
 	$config['email_activate']   = 'activate.tpl.php';
 	
 	/**
 	 * Forgot Password Email Template
-         * Default : forgot_password.tpl.php
+     * Default : forgot_password.tpl.php
 	 **/
 	$config['email_forgot_password']   = 'forgot_password.tpl.php';
         
-       /**
+     /**
 	 * Forgot User name Email Template
-         * Default : forgot_user_name.tpl.php
+     * Default : forgot_user_name.tpl.php
 	 **/
 	$config['email_forgot_user_name']   = 'forgot_user_name.tpl.php';
 

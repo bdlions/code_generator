@@ -157,7 +157,7 @@ class Ion_auth
             $this->ci->email->clear();
             $this->ci->email->set_newline("\r\n");
             $this->ci->email->from($this->ci->config->item('admin_email', 'ion_auth'), $this->ci->config->item('site_title', 'ion_auth'));
-            $this->ci->email->to($user->email);
+            $this->ci->email->to($user_info['email']);
             $this->ci->email->subject($this->ci->config->item('site_title', 'ion_auth') . ' - Forgot User Name');
             $this->ci->email->message($message);
 

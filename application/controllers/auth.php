@@ -383,7 +383,7 @@ class Auth extends CI_Controller
         
         if ($this->form_validation->run() == true)
         {
-            $user_infos = $this->ion_auth->where('users.email',$email)->users()->result_array();
+            $user_infos = $this->ion_auth->where('users.email',$this->input->post('email'))->users()->result_array();
             $user_info = $user_infos[0];
             $forgotten = $this->ion_auth->forgotten_user_name($user_info);
             if ($forgotten)
