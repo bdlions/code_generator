@@ -176,7 +176,14 @@ $(function ()
     .bind("select_node.jstree", function (event, data)
     {
         updateClientEndOperationCounter();
+        if(external_variable_values != "") {
+            $.unblockUI();
+            alert("Processing completed.");
+            $('#external_variable_list').dialog('open');
+            has_external_variables = "false";
+        }
         
+                
         //selected node name
         var id = data.rslt.obj.attr("id");
         //parent name of selected node
@@ -579,16 +586,6 @@ $(function ()
         title: 'Download Project'
     });
     
-    var $logicalConnectorDialog = $('#logical_connector_div').dialog({
-        height: 170,
-        width: 640,
-        autoOpen: false,
-        title: 'Current Conditions'
-    });
-    $('div#logical_connector_div').bind('dialogclose', function(event) {
-        $.unblockUI();
-    });
-    
     var $logicalConnectorRemovingConditionDialog = $('#logical_connector_removing_condition_div').dialog({
         height: 170,
         width: 640,
@@ -598,26 +595,6 @@ $(function ()
     $('div#logical_connector_removing_condition_div').bind('dialogclose', function(event) {
         $.unblockUI();
     });
-
-     var $logicalConnectorConditiondialog = $('#logical_connector_conditional_modal').dialog({
-        height: 420,
-        width: 640,
-        autoOpen: false,
-        title: 'Condition'
-    });
-    $('div#logical_connector_conditional_modal').bind('dialogclose', function(event) {
-        $.unblockUI();
-    });
-
-    /*var $logicalConnectorPartOfConditionDivDialog = $('#logical_connector_part_of_condition_div').dialog({
-        modal: true,
-        width: 210,
-        autoOpen: false,
-        title: 'Selected condition'
-    });
-    $('div#logical_connector_part_of_condition_div').bind('dialogclose', function(event) {
-        //$.unblockUI();
-    });*/
     
     $( "#action_variable_modal" ).dialog(
     {
@@ -1072,246 +1049,105 @@ $(function ()
         }
     });
     
-});
-
-function customTextChange(child_node_name, parent_node_name, haslimit, lower_limit, upper_limit, input_type)
-{
-    updateClientEndOperationCounter();
-    var allow_variable = document.getElementById("variable_selected_function_parameter").checked;
-    
-    var nameArray = new Array();
-    var valueArray = new Array();
-    var counter = 0;
-    var total_parameters = 1;
-    var combo_counter = 1;
-    var is_valid = 1;
-    $("tr", $("#parameters_table")).each(function () {
-        //skipping first row which is actually header of that table
-        if (total_parameters > 1) {
-            var i = 1;
-            $("td", $(this)).each(function () {
-                if (i == 1) {
-                    //parameter name
-                    nameArray[counter] = $(this).text();
-                } else if (i == 2) {
-                    //textinput value
-                    $("input", $(this)).each(function () {
-                        //alert("value:"+$(this).attr("value"));
-                        valueArray[counter] = $(this).attr("value");
-                        //var assigned_value_type = typeof($(this).attr("value"));
-                        //alert(typeof ($(this).attr("value")));
-                        var reg_exp = "";
-                        
-                        if(allow_variable)
-                        {
-                            //checking valid number variables
-                            var parameter_value = $(this).attr("value").trim();
-                            var is_boolean_variable = false;
-                            var is_number_variable = false;
-                            var variable_type = "";
-                            var variable_name = "";
-                            $("#demo1 ul li#variable ul li").each(function(){
-                                variable_type = $(this).attr("title");
-                                variable_name = $(this).text().trim();
-                                if(variable_type == "BOOLEAN" && variable_name == parameter_value)
-                                {
-                                    is_boolean_variable = true;
-                                }
-                                else if(variable_type == "NUMBER" && variable_name == parameter_value)
-                                {
-                                    is_number_variable = true;
-                                }
-                            });
-                            if(is_boolean_variable)
-                            {
-                                alert("You can't use boolean variable as function parameter. Please use number variable");
-                                is_valid = 0;
-                            }
-                            else if(!is_boolean_variable && !is_number_variable)
-                            {
-                                alert("Please use number variable");
-                                is_valid = 0;
-                            }
-                        }
-                        else
-                        {
-                            if(input_type == "INTEGER")
-                            {
-                                reg_exp = /^-?\d+$/g;
-                                if(!reg_exp.test($(this).attr("value").trim()))
-                                {
-                                    alert("Invalid input type.");
-                                    is_valid = 0;
-                                }
-                            }
-                            else if(input_type == "REAL")
-                            {
-                                reg_exp = /^-?\d+.{1}\d+$/g;
-                                if(!reg_exp.test($(this).attr("value").trim()))
-                                {
-                                    alert("Invalid input type.");
-                                    is_valid = 0;
-                                }
-                            }
-
-                            if(haslimit == 1 && is_valid == 1){
-                                if(Number($(this).attr("value").trim()) < lower_limit || Number($(this).attr("value").trim()) > upper_limit){
-                                    alert("Your given input for "+$(this).attr("name")+" is out or range. Please assign value within ["+lower_limit+","+upper_limit+"]");
-                                    //return;
-                                    is_valid = 0;
-                                }
-                            }
-                        }
-                    });
-                    $("select", $(this)).each(function () {
-                        //alert("value:"+$("#customCombo option:selected").text());
-                        valueArray[counter] = $("#customCombo" + combo_counter + " option:selected").text();
-                        combo_counter++;
-                    });
-                }
-
-                i++;
-            });
-            counter++;
-        }
-        total_parameters++;
-
-    });
-    if(is_valid == 0)
-        return;
-    else
-        updateConditionAndCode(parent_node_name, child_node_name, nameArray, valueArray);
-
-}
-
-function updateConditionAndCode(parent_node_name, child_node_name, nameArray, valueArray){
-    updateClientEndOperationCounter();
-    var natarul_data = condition_dynamic_process(nameArray, valueArray, child_node_name, parent_node_name);
-    var selected_id;
-    var $custom_anchor;
-    $("a", $("#changing_stmt")).each(function () {
-        if ($(this).attr("class")) {
-            selected_id = $(this).attr("id");
-            $custom_anchor = $(this);
-            var html_text = $custom_anchor.html();
-            var text_content = $custom_anchor.text();
-            html_text = html_text.trim().replace(text_content.trim(), "");
-            $custom_anchor.html(html_text + natarul_data);
-
-            //updating left panel
-            $("a", $("#selectable .ui-selected")).each(function ()
-            {
-                if($(this).attr("id") == selected_id){
-                    $(this).html($custom_anchor.html());
-                }
-                $(this).removeAttr("onclick");
-                $(this).removeAttr("class");
-            });
-
-        }
-    });	
-    $("a", $("#code_stmt")).each(function () {
-        if ($(this).attr("id") == selected_id) {
-            var $custom_anchor = $(this);
-            var code_data = code_dynamic_process(nameArray, valueArray, child_node_name, parent_node_name)
-            var html_text = $custom_anchor.html();
-            var text_content = $custom_anchor.text();
-            html_text = html_text.trim().replace(text_content.trim(), "");
-            $custom_anchor.html(html_text + code_data);
-            $("div",  $('#selectable .ui-selected')).each(function ()
-            {
-                $("input", $(this)).each(function () {
-                    if($(this).attr("id") == selected_id){
-                        $(this).removeAttr("value");
-                        $(this).attr("value",code_data);
-                    }
-                });
-            });                        		
-        }
-    });
-}
-
-function customComboChange(cust_comb) {
-    updateClientEndOperationCounter();
-    var id = cust_comb.options[cust_comb.selectedIndex].id;
-    var name = cust_comb.options[cust_comb.selectedIndex].title;
-    var nameArray = new Array();
-    var valueArray = new Array();
-    var counter = 0;
-    var total_parameters = 1;
-    var combo_counter = 1;
-    var parent_node_name = name;
-    var child_node_name = id;
-    $("tr", $("#parameters_table")).each(function () {
-        //alert($(this).html());
-        if (total_parameters > 1) {
-            var i = 1;
-            $("td", $(this)).each(function () {
-                if (i == 1) {
-                    //alert("id:"+$(this).text());
-                    nameArray[counter] = $(this).text();
-                } else if (i == 2) {
-                    $("input", $(this)).each(function () {
-                        //alert("value:"+$(this).attr("value"));
-                        valueArray[counter] = $(this).attr("value");
-                    });
-                    $("select", $(this)).each(function () {
-                        //alert("value:"+$("#customCombo"+combo_counter+" option:selected").text());
-                        valueArray[counter] = $("#customCombo" + combo_counter + " option:selected").text();
-                        combo_counter++;
-                    });
-                }
-
-                i++;
-            });
-            counter++;
-        }
-        total_parameters++;
-
-    });
-    
-    var natural_data = condition_dynamic_process(nameArray, valueArray, id, name);
-    var selected_id;
-    var $custom_anchor;
-    $("a", $("#changing_stmt")).each(function () {
-        if ($(this).attr("class")) {
-            selected_id = $(this).attr("id");
-            $custom_anchor = $(this);
-            var html_text = $custom_anchor.html();
-            var text_content = $custom_anchor.text();
-            html_text = html_text.trim().replace(text_content.trim(), "");
-            $custom_anchor.html(html_text + natural_data);
-        }
-    });
-    //updating left panel
-    $("a", $("#selectable .ui-selected")).each(function ()
+    //This modal window is created to add logical connectors
+    $( "#logical_connector_div" ).dialog(
     {
-        if($(this).attr("id") == selected_id){
-            $(this).html($custom_anchor.html());
-        }
-        $(this).removeAttr("onclick");
-        $(this).removeAttr("class");
-    });	
-    $("a", $("#code_stmt")).each(function () {
-        if ($(this).attr("id") == selected_id) {
-            var $custom_anchor = $(this);
-            var code_data = code_dynamic_process(nameArray, valueArray, child_node_name, parent_node_name);
-            var html_text = $custom_anchor.html();
-            var text_content = $custom_anchor.text();
-            html_text = html_text.trim().replace(text_content.trim(), "");
-            $custom_anchor.html(html_text + code_data);
-            $("div",  $('#selectable .ui-selected')).each(function ()
+        //setting some properties
+        autoOpen: false,
+        width: 540,
+        modal: true,
+        title: 'Current Conditions',
+        //setting buttons
+        buttons:
+        {
+            "Cancel": function()
             {
-                $("input", $(this)).each(function () {
-                    if($(this).attr("id") == selected_id){
-                        $(this).removeAttr("value");
-                        $(this).attr("value",code_data);
-                    }
-                });
-            });
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Ok": function()
+            {
+                updateClientEndOperationCounter();
+                button_logical_connector_ok_pressed();                                            
+            }
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();
+            //closing the dialog            
         }
     });
-}
+    
+    //This modal window is created to add logical connectors condition
+    $( "#logical_connector_conditional_modal" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 640,
+        modal: true,
+        title: 'Condition',
+        //setting buttons
+        buttons:
+        {
+            "Cancel": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Ok": function()
+            {
+                updateClientEndOperationCounter();
+                buttonLogicalConnectorConditionOkPressed();
+            }
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();
+            //closing the dialog            
+        }
+    });
+    
+    $( "#external_variable_list" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 500,
+        modal: true,
+        title: 'External variables',
+        //setting buttons
+        buttons:
+        {
+            "Cancel": function()
+            {
+                $( this ).dialog( "close" );
+                updateClientEndOperationCounter();
+                external_variable_values = "";
+            },
+            "Ok": function()
+            {                
+                updateClientEndOperationCounter();
+                //updating text input value
+                $('#externalTextInput').val(external_variable_values);
+                //calling text input onchange method
+                if (document.createEvent && document.getElementById('externalTextInput').dispatchEvent) {
+                    var evt = document.createEvent("HTMLEvents");
+                    evt.initEvent("change", true, true);
+                    document.getElementById('externalTextInput').dispatchEvent(evt); // for DOM-compliant browsers
+                } else if (document.getElementById('externalTextInput').fireEvent) {
+                    document.getElementById('externalTextInput').fireEvent("onchange"); // for IE
+                }
+                $( this ).dialog( "close" );
+            }            
+        },
+        close: function()
+        {
+            external_variable_values = "";
+            updateClientEndOperationCounter();
+            //closing the dialog            
+        }
+    });
+    
+});
 
 //user clicks anchor from expression from above code panel
 function manageExpression($href) {
@@ -2019,6 +1855,7 @@ function button_add_bracket_in_condition_ok_pressed()
     
     
     $('#add_bracket_in_condition_div').dialog('close');
+    left_panel_condition_or_action_selected();
 }
 
 function button_add_bracket_in_condition_cancel_pressed()

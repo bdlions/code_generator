@@ -28,6 +28,53 @@ $(document).ready(function()
     set_project_variables(custom_variable_list.variable_list); 
     
     var base_url = '<?php echo $base_url?>';
+    
+    has_external_variables = '<?php echo $has_external_variables?>';
+    is_cancel_pressed_external_variable_upload = '<?php echo $is_cancel_pressed_external_variable_upload?>';
+    external_file_content_error = '<?php echo $external_file_content_error?>';
+    external_variable_values = "";
+    var external_variable_length = '<?php echo count($external_variable_list)?>';
+    if(external_variable_length > 0 || is_cancel_pressed_external_variable_upload == 'true' || external_file_content_error == 'true')
+    {
+        //retrieving previously selected anchor id in natural language panel to select this expression after page reload
+        var naturalLanguagePanelSelectedAnchorId = '<?php echo $selected_anchor_id?>';
+        left_panel_condition_or_action_selected();
+        $("a", $("#changing_stmt")).each(function () 
+        {
+             if(naturalLanguagePanelSelectedAnchorId == $(this).attr("id")) {
+                manageExpression(this);   
+             }    
+        });
+        if(is_cancel_pressed_external_variable_upload == 'true')
+        {
+            alert("Press upload button again to load external variables.");
+        }
+        else if(external_file_content_error == 'true')
+        {
+            alert("Each variable must be in a separated line");
+        }
+        else if(external_variable_length > 0) {
+            //$('#external_variable_list').dialog('open');
+            external_variable_values = '<?php
+            $variable_values_counter = 0;
+            $variable_values = "";
+            foreach ($external_variable_values as $external_variable_value) 
+            {                       
+                if($variable_values_counter == 0)
+                {
+                    $variable_values = $variable_values.$external_variable_value;
+                }
+                else
+                {
+                    $variable_values = $variable_values.",".$external_variable_value;
+                }
+                $variable_values_counter++;            
+            }
+            echo $variable_values;
+            ?>';
+        }
+    }
+       
     set_server_base_url(base_url);
     
     trackUserOperation();
@@ -373,12 +420,8 @@ $(document).ready(function()
         <option value="BooleanVariable">Boolean Variable</option>
     </select>
     <label>after</label>
-    <ol id="logical_connector_selected_item" style="font-size:8pt;">
-       
+    <ol id="logical_connector_selected_item" style="font-size:8pt;">       
     </ol>
-
-    <button id="button_logical_connector_ok" onclick="button_logical_connector_ok_pressed()" type="button">Ok</button>
-    <button id="button_logical_connector_cancel" onclick="button_logical_connector_cancel_pressed()" type="button">Cancel</button>
 </div>
 <!-- end of logical connector div modal -->
 
@@ -505,9 +548,7 @@ $(document).ready(function()
             <td>
                 <input type = "hidden" value="" name="logical_connector_selected_index" id="logical_connector_selected_index" />
                 <input type = "hidden" value="" name="logical_connector_selected_anchor_id" id="logical_connector_selected_anchor_id" />
-                <input type = "hidden" value="" name="logical_connector_selected_anchor_title" id="logical_connector_selected_anchor_title" />
-                <button id="button_logical_connector_condition_ok" onclick="buttonLogicalConnectorConditionOkPressed()" type="button">Ok</button>
-                <button id="button_logical_connector_condition_cancel" onclick="buttonLogicalConnectorConditionCancelPressed()" type="button">Cancel</button>
+                <input type = "hidden" value="" name="logical_connector_selected_anchor_title" id="logical_connector_selected_anchor_title" />                
             </td>
         </tr>
     </table>
@@ -852,5 +893,45 @@ $(document).ready(function()
             <td><label id="lable_condition_boolean_right_part_change_confirmation"></label></td>
             
         </tr>
+    </table>
+</div>
+
+<div id="external_variable_list" >
+    <table width="100%" style="border-collapse:collapse;">
+        <?php
+        foreach ($external_variable_list as $external_variable) 
+        {
+        ?>
+            <tr>
+                <td valign='top' >
+                    <?php echo $external_variable; ?>  
+                </td>
+            </tr>    
+        <?php   
+        } 
+        ?> 
+    </table>
+    <?php
+        $variable_values_counter = 0;
+        $variable_values = "";
+        foreach ($external_variable_values as $external_variable_value) 
+        {                       
+            if($variable_values_counter == 0)
+            {
+                $variable_values = $variable_values.$external_variable_value;
+            }
+            else
+            {
+                $variable_values = $variable_values." , ".$external_variable_value;
+            }
+            $variable_values_counter++;            
+        } 
+    ?> 
+    <table width="100%" style="border-collapse:collapse;">
+        <tr>    
+            <td>
+                <?php echo $variable_values;?>
+            </td>
+        </tr>         
     </table>
 </div>

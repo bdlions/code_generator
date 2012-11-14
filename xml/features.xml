@@ -138,6 +138,38 @@
 		</parameters>
 	</feature>
 	<feature>
+		<options>externaloption</options> 
+		<optionstype>CustombyUser</optionstype> 
+		<natural>custombyuser($value,$country,$external)</natural> 
+		<code>custombyuser($value,$country,$external)</code> 
+		<help>http://www.help.com/age</help> 
+		<parameters>
+			<parameter>
+				<name>value</name> 
+				<type>INTEGER</type> 
+				<default>0</default> 
+			</parameter>
+			<parameter>
+				<name>country</name> 
+				<type>text</type> 
+				<allowedvalues>
+					<value>USA</value> 
+					<value>CAN</value> 
+					<value>EUR</value> 
+				</allowedvalues>
+				<default>USA</default> 
+				<allowvar>No</allowvar> 
+			</parameter>
+
+			<parameter> 
+				<name>external</name> 
+				<type>text</type> 
+				<default></default> 
+				<allowvar>No</allowvar> 
+			</parameter> 
+		</parameters>
+	</feature>
+	<feature>
 		<options>action</options>
 		<optionstype>run</optionstype>
 		<natural>run on $day</natural>

@@ -67,12 +67,6 @@ function add_logical_operators()
             logical_connector_list_items = logical_connector_list_items+$(this).prop('outerHTML');
         }
     });
-    //blocking current window before rendering modal window to select logical connector operator
-    $.blockUI({
-        message: '',
-        theme: false,
-        baseZ: 500
-    });
     //opening logical connector div modal window
     $('#logical_connector_div').dialog('open');
     //adding condition list in modal window
@@ -487,11 +481,6 @@ function button_logical_connector_ok_pressed()
     
     if(logicalConnectorItemTypeIndex == 0)
     {
-        $.blockUI({
-            message: '',
-            theme: false,
-            baseZ: 500
-        });
         //opening conditional modal window
         $('#logical_connector_conditional_modal').dialog('open');
     }
@@ -681,9 +670,7 @@ function buttonLogicalConnectorConditionOkPressed()
         }
         //updating left panel with new added condition
         selectedItem.html(previousAnchorList+currentAnchorList+nextAnchorList+"<div id='code'>"+previousInputCodeList+currentInputCodeList+nextInputCodeList+"</div>");
-
-        //unblocking the user interface
-        $.unblockUI();            
+           
     }
     //resetting three parts from conditional modal
     $("#logical_connector_left_part").html("");
@@ -700,16 +687,6 @@ function button_logical_connector_cancel_pressed()
     updateClientEndOperationCounter();
     //closing logical connector modal window
     $('#logical_connector_div').dialog("close");
-    //unblocking the user interface
-    $.unblockUI();
-}
-
-//user presses cancel button in logical connector conditional modal window
-function buttonLogicalConnectorConditionCancelPressed()
-{
-    updateClientEndOperationCounter();
-    //closing logical connector condition modal window
-    $('#logical_connector_conditional_modal').dialog("close");
     //unblocking the user interface
     $.unblockUI();
 }

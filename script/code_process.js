@@ -69,7 +69,8 @@ function server_process(nameArray, valueArray, id, name)
         if(optionstype == id)
         {
             table_content = "<table width='100%'  border='1' style='border-collapse:collapse;'>";
-            var combo_counter = 1;                
+            var combo_counter = 1;   
+            var text_input_counter = 1;
             var parameter_list = feature_object.getParameterList();
             if(parameter_list.length == 0)
             {
@@ -116,8 +117,15 @@ function server_process(nameArray, valueArray, id, name)
                     }
                     var options_id = options;
                     var options_name = optionstype;
-                    var text_input_counter = 1;
-                    table_content = table_content+"<input type='text' id='textinput"+text_input_counter+"' name = '"+parameter_name+"' value = '"+dataArray[parameter_name]+"' onchange='customTextChange(\""+options_name+"\",\""+options_id+"\",\""+haslimit+"\",\""+lower+"\",\""+upper+"\",\""+parameter_type+"\")'></input></td></tr>";
+                    
+                    var buttonInsertionCode = "";
+                    var textInputId = "textinput"+text_input_counter;
+                    if(parameter_name == "external")
+                    {
+                        buttonInsertionCode = "<form method='post' id='external_variable_form_upload' action='../../../index.php/welcome/upload_external_variable'>  <input type = 'hidden' value='' name='external_variable_upload_project_left_panel_content' id='external_variable_upload_project_left_panel_content'/><input type = 'hidden' value='' name='ev_anchor_id' id='ev_anchor_id'/><input type='button' id='external_variable_upload' name='external_variable_upload' onclick='externalVariableFormSubmit()' value='Upload'> </form>";                            
+                        textInputId = "externalTextInput";
+                    }
+                    table_content = table_content+"<input type='text' id='"+textInputId+"' name = '"+parameter_name+"' value = '"+dataArray[parameter_name]+"' onchange='customTextChange(\""+options_name+"\",\""+options_id+"\",\""+haslimit+"\",\""+lower+"\",\""+upper+"\",\""+parameter_type+"\",\""+textInputId+"\")'></input>"+buttonInsertionCode+"</td></tr>";
                     text_input_counter++;
                 }
             }

@@ -13,6 +13,7 @@ class Welcome extends CI_Controller
         $this->load->helper('file');
         $this->load->helper('form');
         $this->load->library('form_validation');
+        $this->load->helper('array');
     }
     public function index()
     {
@@ -150,6 +151,50 @@ class Welcome extends CI_Controller
         );
         $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
         
+        $external_variable_list = array();
+        $external_variable_values = array();
+        //if ($this->session->userdata('external_variable_list') !== FALSE) {
+           //$external_variable_list= $this->session->userdata('external_variable_list');
+        //}   
+        $this->data['selected_anchor_id'] = "";
+        $this->data['has_external_variables'] = "false";
+        $this->data['is_cancel_pressed_external_variable_upload'] = "false";
+        $this->data['external_file_content_error'] = "false";
+        if ($this->session->userdata('external_variable_list') !== FALSE && count($this->session->userdata('external_variable_list')) > 0) {
+           $this->data['selected_anchor_id'] = $this->session->userdata('selected_anchor_id');
+           $this->session->set_userdata('selected_anchor_id', "");
+           $this->data['has_external_variables'] = "true";
+           $external_variables= $this->session->userdata('external_variable_list');
+           $external_variable_values = $this->session->userdata('external_variable_values');
+           foreach($external_variables as $external_variable)
+           {
+               $external_variable_list[] = $external_variable;
+           }
+           //print_r(count($external_variable_list));
+           //print_r($external_variable_list);
+           $reset_array = array();
+           $this->session->set_userdata('external_variable_list', $reset_array);
+           $this->session->set_userdata('external_variable_values', $reset_array);
+           //$this->session->unset_userdata('external_variable_list');
+        }
+        else if($this->session->userdata('is_cancel_pressed_external_variable_upload') !== FALSE && $this->session->userdata('is_cancel_pressed_external_variable_upload') == "true")
+        //else
+        {
+            $this->data['selected_anchor_id'] = $this->session->userdata('selected_anchor_id');
+            $this->session->set_userdata('selected_anchor_id', "");
+            $this->data['is_cancel_pressed_external_variable_upload'] = $this->session->userdata('is_cancel_pressed_external_variable_upload');
+            $this->session->set_userdata('is_cancel_pressed_external_variable_upload', "false");
+        }
+        else if($this->session->userdata('external_file_content_error') !== FALSE && $this->session->userdata('external_file_content_error') == "true")
+        //else
+        {
+            $this->data['selected_anchor_id'] = $this->session->userdata('selected_anchor_id');
+            $this->session->set_userdata('selected_anchor_id', "");
+            $this->data['external_file_content_error'] = $this->session->userdata('external_file_content_error');
+            $this->session->set_userdata('external_file_content_error', "false");
+        }
+        $this->data['external_variable_list'] = $external_variable_list;
+        $this->data['external_variable_values'] = $external_variable_values; 
         $this->template->load("default_template", 'welcome_message', $this->data);
     }
     
@@ -601,5 +646,120 @@ class Welcome extends CI_Controller
             //redirect them to the login page
             redirect('auth/login', 'refresh');
         }
+    }
+    
+    function upload_external_variable()
+    {
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }
+        if(isset($_POST['external_variable_upload_project_left_panel_content']) && $_POST['external_variable_upload_project_left_panel_content'] != "")
+        {
+            $natural_language_panel_anchor_id = "";
+            if(isset($_POST['ev_anchor_id']))
+            {
+                $natural_language_panel_anchor_id = $_POST['ev_anchor_id'];            
+            }            
+            $this->session->set_userdata('selected_anchor_id', $natural_language_panel_anchor_id);
+            $project_left_panel_content = $_POST['external_variable_upload_project_left_panel_content'];
+            $data = array(
+                'project_content_backup' => $project_left_panel_content
+            );
+            $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
+        }
+        $this->template->set('menu_bar', 'design/configuration_menubar');
+        $this->template->load("default_template", "program/upload_external_variables");
+    }
+    function upload_external_variables_post_processing()
+    {
+        if (!$this->ion_auth->logged_in())
+        {
+            //redirect them to the login page
+            redirect('auth/login', 'refresh');
+        }       
+        $project_id = $this->session->userdata('project_id'); 
+        if($this->input->post('upload'))
+        {
+            $config['upload_path'] = './external_variables/';
+            $config['allowed_types'] = 'txt';
+            $config['max_size'] = '5000';
+            $config['overwrite'] = TRUE;
+
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload()) {
+                $error = array('error' => $this->upload->display_errors());
+                $this->data['error'] = $error;
+                $this->template->set('menu_bar', 'design/configuration_menubar');
+                $this->template->load("default_template", 'program/upload_external_variables', $this->data);
+                //$this->load->view('program/upload_configuration_file', $error);
+            } else {
+                $data = $this->upload->data();
+                //print_r($data);
+                $uploaded_file_name = $data['raw_name'];
+                $uploaded_file_path = "./external_variables/".$uploaded_file_name.".txt";
+                $external_file_content = "";
+                if (file_exists($uploaded_file_path)) {
+                    $external_file_content = file_get_contents($uploaded_file_path);                
+                }
+                $external_variable_list = array();
+                $variable_name = array();
+                $external_variable_values = array();
+                $external_variable_values[0] = "\"".$uploaded_file_name."\"";
+                $file_content_array = explode("\n", $external_file_content);
+                $total_lines = count($file_content_array);
+                $variable_counter = 0;
+                for($counter = 0 ; $counter < $total_lines ; $counter++)
+                {
+                    $each_line_content = $file_content_array[$counter];
+                    $each_line_content = trim($each_line_content);
+                    $first_word = substr($each_line_content, 0, 8);
+                    //Step 1 finding all lines that start with external
+                    if($first_word == "external")
+                    {
+                        $external_variable_list[$variable_counter] = $each_line_content;
+                        //Step 2 removing stuff after ;
+                        $temp_string  =  explode(";", $each_line_content);
+                        
+                        if(count($temp_string) > 1)
+                        {
+                            $comment_string = $temp_string[1];
+                            $comment_string = trim($comment_string);
+                            $comment_first_word = substr($comment_string, 0, 8);
+                            if($comment_first_word == "external")
+                            {
+                                $this->session->set_userdata('external_file_content_error', "true");
+                                $redirect_path = "welcome/load_project/".$project_id;
+                                redirect($redirect_path, 'refresh');
+                                return;
+                            }
+                        }
+                        
+                        $each_line_content = $temp_string[0];
+                        $temp_string  =  explode("=", $each_line_content);
+                        //storing variable value
+                        $external_variable_values[$variable_counter+1] = $temp_string[1];
+                        $temp_string = explode(" ", trim($temp_string[0]));
+                        //Step 3 getting the variable names
+                        $variable_name[$variable_counter] = $temp_string[count($temp_string)-1];
+                        //print_r("variable->".$variable_name[$variable_counter].":".$external_variable_values[$variable_counter]."--");
+                        $variable_counter++;
+                    }                
+                }
+                $this->session->set_userdata('external_variable_list', $external_variable_list);
+                $this->session->set_userdata('external_variable_values', $external_variable_values);
+
+                $redirect_path = "welcome/load_project/".$project_id;
+                redirect($redirect_path, 'refresh');
+            }
+        }
+        else if($this->input->post('cancel'))
+        {
+            $this->session->set_userdata('is_cancel_pressed_external_variable_upload', "true");
+            $redirect_path = "welcome/load_project/".$project_id;
+            redirect($redirect_path, 'refresh');
+        }
+        
     }
 }

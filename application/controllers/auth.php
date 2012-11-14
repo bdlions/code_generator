@@ -977,10 +977,32 @@ class Auth extends CI_Controller
             redirect('auth/login', 'refresh');
         }
         
-        $this->ion_auth->where('project_id',$project_id)->delete_project();
-        $this->ion_auth->where('project_id',$project_id)->delete_user_project();
-        
-        redirect("auth", 'refresh');
+        if ($this->input->post('delete_project_yes'))
+        {
+            $this->ion_auth->where('project_id',$project_id)->delete_project();
+            $this->ion_auth->where('project_id',$project_id)->delete_user_project();
+            $base = base_url();        
+            $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+            $this->template->set('css', $css);
+            $this->template->set('menu_bar', 'design/menu_bar_member_demo');                
+            //loading user deletion confirmation page
+            $this->template->load("default_template", "auth/delete_project_successful");
+        }
+        else if ($this->input->post('delete_project_no'))
+        {
+            //loading admin dashboard
+            redirect("auth", 'refresh');
+        }
+        else
+        {
+            //loading user deletion confirmation page
+            $this->data['project_id'] = $project_id;
+            $base = base_url();        
+            $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+            $this->template->set('css', $css);
+            $this->template->set('menu_bar', 'design/menu_bar_member_demo');
+            $this->template->load("default_template", "auth/delete_project_confirmation", $this->data);
+        }
     }
     
     function update_project()
