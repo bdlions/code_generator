@@ -1,0 +1,15 @@
+//Main Variables
+external bool var1 = true;  // b;lla
+external bool Use = true;    // external a=5
+int FiveD = 1;             // asdasd
+external bool isOK = false;            // asdasd
+external int Check = 1;            // asadas
+external bool Allow=false;    // gfhfghfg
+external int Slip = 3;             // vbcxbxc
+external int Number = 5432101;
+double as=1.5;   //
+external string a="asdas"; 
+string b="zxczx";
+int Previous = 0;          
+fsdfsdfsd
+sdfsd

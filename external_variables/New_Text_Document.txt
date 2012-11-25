@@ -1,0 +1,4 @@
+    var external_variable_list = JSON.parse('<?php        
+        echo json_encode(array('external_variable_list' => $external_variable_list));
+        ?>');
+    alert("external_variable_list size:"+external_variable_list.external_variable_list.length);
