@@ -160,7 +160,7 @@ class Welcome extends CI_Controller
         $this->data['has_external_variables'] = "false";
         $this->data['is_cancel_pressed_external_variable_upload'] = "false";
         $this->data['external_file_content_error'] = "false";
-        if ($this->session->userdata('external_variable_list') !== FALSE && count($this->session->userdata('external_variable_list')) > 0) {
+        if ($this->session->userdata('external_variable_values') !== FALSE && count($this->session->userdata('external_variable_values')) > 0) {
            $this->data['selected_anchor_id'] = $this->session->userdata('selected_anchor_id');
            $this->session->set_userdata('selected_anchor_id', "");
            $this->data['has_external_variables'] = "true";
@@ -739,7 +739,7 @@ class Welcome extends CI_Controller
                         $each_line_content = $temp_string[0];
                         $temp_string  =  explode("=", $each_line_content);
                         //storing variable value
-                        $external_variable_values[$variable_counter+1] = $temp_string[1];
+                        $external_variable_values[$variable_counter+1] = " ".trim($temp_string[1]);
                         $temp_string = explode(" ", trim($temp_string[0]));
                         //Step 3 getting the variable names
                         $variable_name[$variable_counter] = $temp_string[count($temp_string)-1];
@@ -749,7 +749,7 @@ class Welcome extends CI_Controller
                 }
                 $this->session->set_userdata('external_variable_list', $external_variable_list);
                 $this->session->set_userdata('external_variable_values', $external_variable_values);
-
+                
                 $redirect_path = "welcome/load_project/".$project_id;
                 redirect($redirect_path, 'refresh');
             }

@@ -33,7 +33,7 @@ $(document).ready(function()
     is_cancel_pressed_external_variable_upload = '<?php echo $is_cancel_pressed_external_variable_upload?>';
     external_file_content_error = '<?php echo $external_file_content_error?>';
     external_variable_values = "";
-    var external_variable_length = '<?php echo count($external_variable_list)?>';
+    var external_variable_length = '<?php echo count($external_variable_values)?>';
     if(external_variable_length > 0 || is_cancel_pressed_external_variable_upload == 'true' || external_file_content_error == 'true')
     {
         //retrieving previously selected anchor id in natural language panel to select this expression after page reload
