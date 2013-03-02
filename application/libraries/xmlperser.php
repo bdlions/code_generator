@@ -21,7 +21,7 @@ class XMLPerser
     {
         
         
-        $xml_path = base_url() .'xml/'.$this->ci->session->userdata('project_id').'.xml';
+        $xml_path = 'xml/'.$this->ci->session->userdata('project_id').'.xml';
         $doc = new DOMDocument();    
         $doc->load($xml_path);
 

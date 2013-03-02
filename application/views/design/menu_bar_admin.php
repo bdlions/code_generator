@@ -3,10 +3,10 @@
         <a href="#">Users</a>
         <ul>
             <?php
-            echo anchor('auth/load_search', 'Search');
-            echo anchor('auth', 'Show');
+            echo anchor('admin/load_search', 'Search');
+            echo anchor('admin', 'Show');
             ?>
         </ul>
     </li>
-    <li><?php echo anchor('auth/logout', 'Logout'); ?></li>
+    <li><?php echo anchor('admin/logout', 'Logout'); ?></li>
 </ul>
