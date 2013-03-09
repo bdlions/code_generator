@@ -15,7 +15,7 @@ function save()
     });
     $.ajax({
         type: "POST",
-        url: "../../../index.php/auth/update_project",
+        url: "../../auth/update_project",
         data: {
             project_content: left_panel_content
         },

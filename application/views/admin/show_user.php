@@ -1,8 +1,8 @@
 <div class='box'>
 
-    <h1>User Information</h1>
+    <h1><?php echo $title; ?></h1>
     <div id="infoMessage"><?php echo $message; ?></div>
-    <?php echo form_open('auth'); ?>
+    <?php echo form_open('admin'); ?>
     <fieldset>
         <legend>User update information</legend>
         <table border="0" width="100%" >
@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <td><label>Country:</label></td>
-                <td><?php echo form_dropdown('countries', $countries, $selected_country); ?></td>
+                <td><?php echo form_dropdown('countries', $countries, $selected_country, 'disabled="disabled"'); ?></td>
             </tr>
         </table>
         <?php echo form_submit('submit', 'Ok'); ?>

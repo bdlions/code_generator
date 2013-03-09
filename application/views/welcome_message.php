@@ -4,7 +4,7 @@ $(document).ready(function()
     xml_path = '<?php 
                     $CI = &get_instance();
                     $project_id = $CI->session->userdata('project_id');
-                    echo '../../../xml/'.$project_id.'.xml';
+                    echo '../../xml/'.$project_id.'.xml';
                 ?>';
     load_xml();
     //filtering left panel content

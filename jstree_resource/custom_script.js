@@ -154,7 +154,7 @@ $(function ()
                     "valid_children" : "none",
                     // If we specify an icon for the default type it WILL OVERRIDE the theme icons
                     "icon" : {
-                        "image" : "../../../jstree_resource/images/a.png"
+                        "image" : "../../jstree_resource/images/a.png"
                     }
                 },
                 // The `folder` type
@@ -162,7 +162,7 @@ $(function ()
                     // can have files and other folders inside of it, but NOT `drive` nodes
                     "valid_children" : [ "default", "folder" ],
                     "icon" : {
-                        "image" : "../../../jstree_resource/images/i.png"
+                        "image" : "../../jstree_resource/images/i.png"
                     }
                 }
             }

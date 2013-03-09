@@ -60,16 +60,6 @@
         <ul>
             <a onclick="generate_code()">Code</a>
         </ul>
-    </li> 
-    <li>
-        <a href="#">Configuration</a>
-        <ul>
-            <?php
-                echo anchor('program', 'Create Configuration');
-                echo anchor('auth/upload_configuration_file', 'Upload Configuration');
-                
-            ?>
-        </ul>
     </li>
     <li><?php echo anchor('auth/logout', 'Logout');?></li>
     <li><a href="http://help.com" target="_blank" title="Help">Help</a></li>

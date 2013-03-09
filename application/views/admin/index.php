@@ -5,7 +5,7 @@
     <table align="right" border="1" style="border-collapse:collapse" >
         <tr align="right" style="color:green">
             <td>
-                 <?php echo form_open("auth/user_render_pagination/0");?>
+                 <?php echo form_open("admin/user_render_pagination/0");?>
                     <fieldset>
                         <label>Sort by status: </label>
                         <?php echo form_checkbox('status', 'accept', $sort_by_status);?>  
@@ -48,10 +48,10 @@
                             <?php echo $group->name; ?><br />
                         <?php endforeach ?>
                     </td>
-                    <td><?php echo ($user->active) ? anchor("auth/deactivate/" . $user->id, 'Active') : anchor("auth/activate/" . $user->id, 'Inactive'); ?></td>
-                    <td><?php echo anchor("auth/show_user/" . $user->id, 'Show'); ?></td>
-                    <td><?php echo anchor("auth/edit_user/" . $user->id, 'Edit'); ?></td>
-                    <td><?php echo anchor("auth/delete_user/" . $user->id, 'Delete'); ?></td>
+                    <td><?php echo ($user->active) ? anchor("admin/deactivate/" . $user->id, 'Active') : anchor("admin/activate/" . $user->id, 'Inactive'); ?></td>
+                    <td><?php echo anchor("admin/show_user/" . $user->id, 'Show'); ?></td>
+                    <td><?php echo anchor("admin/edit_user/" . $user->id, 'Edit'); ?></td>
+                    <td><?php echo anchor("admin/delete_user/" . $user->id, 'Delete'); ?></td>
                 </tr>
             <?php endforeach; ?>
                 
@@ -63,7 +63,7 @@
             echo $pagination; 
         }
     ?>
-    <?php echo anchor('auth/user_render_pagination/0',"All")?><br />
-    <p><a href="<?php echo site_url('auth/create_user'); ?>">Create a new user</a></p>
+    <?php echo anchor('admin/user_render_pagination/0',"All")?><br />
+    <p><a href="<?php echo site_url('admin/create_user'); ?>">Create a new user</a></p>
 
 </div>
