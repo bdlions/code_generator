@@ -9,6 +9,6 @@
 
             </td>
         </tr>
-        <tr><td align="right"><input type="submit" value="upload" /></td></tr>
+        <tr><td style="text-align:right"><input type="submit" name="cancel" id="cancel" value="Cancel"/></td><td style="text-align:right"><input type="submit" value="upload" /></td></tr>
     </table>
  </form>    

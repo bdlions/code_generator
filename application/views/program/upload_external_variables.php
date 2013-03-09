@@ -9,6 +9,6 @@
 
             </td>
         </tr>
-        <tr><td align="right"><input type="submit" name="cancel" id="cancel" value="cancel" /></td><td align="left"><input type="submit" name="upload" id="upload" value="upload" /></td></tr>
+        <tr><td style="text-align:right"><input type="submit" name="cancel" id="cancel" value="cancel" /></td><td style="text-align:right"><input type="submit" name="upload" id="upload" value="upload" /></td></tr>
     </table>
  <?php echo form_close();?>
