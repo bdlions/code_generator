@@ -669,7 +669,10 @@ class Welcome extends CI_Controller
             );
             $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
         }
-        $this->template->set('menu_bar', 'design/configuration_menubar');
+        $base = base_url();        
+        $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+        $this->template->set('css', $css);
+        $this->template->set('menu_bar', 'design/menu_bar_member_demo');
         $this->template->load("default_template", "program/upload_external_variables");
     }
     function upload_external_variables_post_processing()
@@ -691,7 +694,10 @@ class Welcome extends CI_Controller
             if (!$this->upload->do_upload()) {
                 $error = array('error' => $this->upload->display_errors());
                 $this->data['error'] = $error;
-                $this->template->set('menu_bar', 'design/configuration_menubar');
+                $base = base_url();        
+                $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+                $this->template->set('css', $css);
+                $this->template->set('menu_bar', 'design/menu_bar_member_demo');
                 $this->template->load("default_template", 'program/upload_external_variables', $this->data);
                 //$this->load->view('program/upload_configuration_file', $error);
             } else {

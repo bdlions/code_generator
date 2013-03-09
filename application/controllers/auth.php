@@ -28,11 +28,7 @@ class Auth extends CI_Controller
         }        
         else
         {
-            if($this->ion_auth->is_admin())
-            {
-                $this->user_render_pagination($this->config->item('pagination_page_range', 'ion_auth'),0);
-            }
-            else if($this->ion_auth->is_member())
+            if($this->ion_auth->is_member())
             {
                 $base = base_url();        
                 $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
@@ -58,91 +54,6 @@ class Auth extends CI_Controller
         }
     }
     
-    function user_render_pagination($limit, $offset = 0)
-    {
-        //set the flash data error message if there is one
-        $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-        $order_by = "id";
-        $order = "asc";
-        $sort_by_status = false;
-        $sort_by_registration_date = false;
-        $sort_descending = false;
-        if($this->input->post('submit'))
-        {
-            $status = $this->input->post('status');
-            $registration_date = $this->input->post('registration_date');
-            $descending = $this->input->post('descending');
-            
-            $sort_by_status = $status;
-            $sort_by_registration_date = $registration_date;
-            $sort_descending = $descending;
-            
-            if($sort_descending)
-            {
-                $order = "desc";            
-            }
-            else
-            {
-                $order = "asc";
-            }
-            if($status == true)
-            {
-                $order_by = "active";
-                // o is Inactive and 1 is Active. Query sort based on 0/1 but we render Active/Inactive
-                if($sort_descending)
-                {
-                    $order = "asc";            
-                }
-                else
-                {
-                    $order = "desc";
-                }
-                //$order = "desc";
-            }
-            else if($registration_date == true)
-            {
-                $order_by = "created_date";
-                //$order = "asc";  
-            }
-        }
-        $this->data['sort_by_status'] = $sort_by_status;
-        $this->data['sort_by_registration_date'] = $sort_by_registration_date;
-        $this->data['sort_descending'] = $sort_descending;
-        
-        $total_users = count($this->ion_auth->users()->result());
-        //list the users
-        if($limit == 0)
-        {
-            $this->data['users'] = $this->ion_auth->order_by($order_by, $order)->users()->result();
-            $limit = $this->config->item('pagination_page_range', 'ion_auth');
-        }
-        else{
-            $this->data['users'] = $this->ion_auth->order_by($order_by, $order)->limit($limit)->offset($offset)->users()->result();
-        }
-        foreach ($this->data['users'] as $k => $user)
-        {
-            $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
-        }
-
-        $this->load->library('pagination');
-
-        $config['base_url'] = base_url().'index.php/auth/user_render_pagination/'.$limit;
-        $config['total_rows'] = $total_users;
-        $config['uri_segment'] = 4;
-        $config['per_page'] = $this->config->item('pagination_page_range', 'ion_auth');
-
-        $this->pagination->initialize($config);
-
-        $this->data['pagination'] = $this->pagination->create_links();
-        
-        $base = base_url();
-        $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;
-        $this->template->set('css', $css);        
-        $this->template->set('menu_bar', 'design/menu_bar_admin');
-        $this->template->set('main_content', "auth/index");
-        $this->template->load("default_template", "auth/index", $this->data);
-    }
-
     //log the user in
     function login()
     {
@@ -554,20 +465,6 @@ class Auth extends CI_Controller
         }
         if ($this->form_validation->run() == true && $this->ion_auth->register($username, $password, $email, $additional_data))
         { 
-            //redirect("auth", 'refresh');
-            
-            /*if($this->ion_auth->is_admin())
-            {
-                //set the flash data error message if there is one
-                $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-                //list the users
-                
-                redirect("auth/index", 'refresh');
-            }
-            else{            
-                $this->data['message'] = "User account successfully created. An email has been sent to you to activate your account.";
-                $this->template->load("default_template", 'auth/create_user_complete', $this->data);
-            }*/
             $base = base_url();            
             if ($this->ion_auth->is_admin())
             {
@@ -654,274 +551,6 @@ class Auth extends CI_Controller
         }
     }
     
-    //load user info to edit user
-    function pre_edit_user($user_id)
-    {
-        //$this->session->set_flashdata('message', "");
-        //$this->data['title'] = "Edit User";
-        //$this->data['user_id'] = $user_id;
-        //only admin can edit an user within same session
-        //if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
-        //{
-        //    redirect('auth', 'refresh');
-        //}
-        
-        //$user_infos = $this->ion_auth->where('users.id',$user_id)->users()->result_array();
-        //$user_info = $user_infos[0];
-        
-        //$groups = $this->ion_auth->groups()->result_array();
-        
-        //set the flash data error message if there is one
-        //$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
-        /*$this->data['first_name'] = array('name' => 'first_name',
-            'id' => 'first_name',
-            'type' => 'text',
-            'value' => $user_info['first_name'],
-        );
-        $this->data['last_name'] = array('name' => 'last_name',
-            'id' => 'last_name',
-            'type' => 'text',
-            'value' => $user_info['last_name'],
-        );
-        $countries = $this->ion_auth->order_by('printable_name','asc')->get_all_countries()->result_array();
-        $this->data['countries'] = array();
-        foreach ($countries as $key => $country)
-        {
-            $this->data['countries'][$country['iso']] = $country['printable_name'];
-        }
-        $this->data['selected_country'] = $user_info['country'];
-        
-        $this->data['groups'] = array();
-        foreach ($groups as $key => $group)
-        {
-            $this->data['groups'][$group['id']] = $group['name'];
-        }
-        $user_group = $this->ion_auth->get_users_groups($user_id)->result();
-        $this->data['selected_group'] = $user_group[0]->id;
-
-        $base = base_url();
-        $css = "<link rel='stylesheet' href='{$base}css/form_design.css' />" ;
-        $this->template->set('css', $css);
-        $this->template->set('main_content', "auth/edit_user");
-        $this->template->load("default_template", 'auth/edit_user', $this->data); */       
-    }
-    
-    //edit user information
-    function edit_user($user_id)
-    {
-        $this->session->set_flashdata('message', "");
-        $this->data['title'] = "Edit User";
-        $this->data['user_id'] = $user_id;
-        //only admin can edit an user within same session
-        if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
-        {
-            redirect('auth', 'refresh');
-        }
-        
-        $user_infos = $this->ion_auth->where('users.id',$user_id)->users()->result_array();
-        $user_info = $user_infos[0];
-        $groups = $this->ion_auth->groups()->result_array();        
-
-        $this->form_validation->set_error_delimiters("<div style='color:red'>", '</div>');
-        
-        //validate form input
-        $this->form_validation->set_rules('first_name', 'First Name', 'required|xss_clean');
-        $this->form_validation->set_rules('last_name', 'Last Name', 'required|xss_clean');
-        $this->form_validation->set_rules('countries', 'Country', 'required|xss_clean');
-        $this->form_validation->set_rules('password', 'Password', 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]|callback_password_check');
-        $this->form_validation->set_rules('password_confirm', 'Password Confirmation', 'required');
-        
-        
-        if ($this->form_validation->run() == true && $this->input->post('submit'))
-        {
-            //user didn't change password field, so we dont need to update password
-            if($this->input->post('password') == $this->config->item('samply_dummy_password', 'ion_auth'))
-            {
-                $additional_data = array(
-                    'first_name' => $this->input->post('first_name'),
-                    'last_name' => $this->input->post('last_name'),
-                    'country' => $this->input->post('countries'),
-                    'group_id' => $this->input->post('groups'),
-                );
-            }
-            else
-            {
-                $additional_data = array(
-                    'first_name' => $this->input->post('first_name'),
-                    'last_name' => $this->input->post('last_name'),
-                    'country' => $this->input->post('countries'),
-                    'group_id' => $this->input->post('groups'),
-                    'password' => $this->input->post('password'),
-                );
-            }
-            
-        }
-        
-        if ($this->form_validation->run() == true && $this->input->post('submit') && $this->ion_auth->update($user_id, $additional_data))
-        { 
-            //$this->session->set_flashdata('message', "User account successfully updated.");
-            
-            //set the flash data error message if there is one
-            $this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-            
-            //redirect('auth', 'refresh');
-            //loading user update confirmation page
-            $this->data['user_id'] = $user_id;
-            $base = base_url();
-            $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;;
-            $this->template->set('css', $css);        
-            $this->template->set('menu_bar', 'design/menu_bar_admin');
-            $this->template->set('main_content', "auth/index");
-            $this->template->load("default_template", "auth/edit_user_successful", $this->data);
-
-            /*//list the users
-            $this->data['users'] = $this->ion_auth->users()->result();
-            foreach ($this->data['users'] as $k => $user)
-            {
-                $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
-            }
-            //$this->template->set('menu_bar', 'design/log_out_menu');
-            $base = base_url();
-            //$css = "<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;
-            //$this->template->set('css', $css);
-            
-            $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;
-            $this->template->set('css', $css);
-            $this->template->set('menu_bar', 'design/menu_bar_admin');
-            
-            $this->template->set('main_content', "auth/index");
-            $this->template->load("default_template", "auth/index", $this->data);
-            */
-        }
-        else
-        { //display the create user form
-            //set the flash data error message if there is one
-            $this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
-            $this->data['first_name'] = array('name' => 'first_name',
-                'id' => 'first_name',
-                'type' => 'text',
-                'value' => $user_info['first_name'],
-            );
-            $this->data['last_name'] = array('name' => 'last_name',
-                'id' => 'last_name',
-                'type' => 'text',
-                'value' => $user_info['last_name'],
-            );
-            $this->data['password'] = array('name' => 'password',
-                'id' => 'password',
-                'type' => 'password',
-                'value' => $this->config->item('samply_dummy_password', 'ion_auth'),
-            );
-            $this->data['password_confirm'] = array('name' => 'password_confirm',
-                'id' => 'password_confirm',
-                'type' => 'password',
-                'value' => $this->config->item('samply_dummy_password', 'ion_auth'),
-            );
-            $countries = $this->ion_auth->order_by('printable_name','asc')->get_all_countries()->result_array();
-            $this->data['countries'] = array();
-            foreach ($countries as $key => $country)
-            {
-                $this->data['countries'][$country['iso']] = $country['printable_name'];
-            }
-            $this->data['selected_country'] = $user_info['country'];
-            
-            $this->data['groups'] = array();
-            foreach ($groups as $key => $group)
-            {
-                $this->data['groups'][$group['id']] = $group['name'];
-            }
-            $user_group = $this->ion_auth->get_users_groups($user_id)->result();
-            $this->data['selected_group'] = $user_group[0]->id;
-            
-            $base = base_url();
-            
-            //$css = "<link rel='stylesheet' href='{$base}css/form_design.css' />" ;
-            //$this->template->set('css', $css);
-            
-            $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
-            $this->template->set('css', $css);
-            $this->template->set('menu_bar', 'design/menu_bar_admin');
-            
-            $this->template->set('main_content', "auth/edit_user");
-            $this->template->load("default_template", 'auth/edit_user', $this->data);
-        }
-    }
-    
-    //load user info to show user
-    function show_user($user_id)
-    {
-        $this->session->set_flashdata('message', "");
-        $this->data['title'] = "Edit User";
-        $this->data['user_id'] = $user_id;
-        //only admin can edit an user within same session
-        if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
-        {
-            redirect('auth', 'refresh');
-        }
-        
-        $user_infos = $this->ion_auth->where('users.id',$user_id)->users()->result_array();
-        $user_info = $user_infos[0];
-
-        //set the flash data error message if there is one
-        $this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
-        $this->data['user_name'] = array('name' => 'user_name',
-            'id' => 'user_name',
-            'type' => 'text',
-            'value' => $user_info['username'],
-        );
-        $this->data['first_name'] = array('name' => 'first_name',
-            'id' => 'first_name',
-            'type' => 'text',
-            'value' => $user_info['first_name'],
-        );
-        $this->data['last_name'] = array('name' => 'last_name',
-            'id' => 'last_name',
-            'type' => 'text',
-            'value' => $user_info['last_name'],
-        );
-        $this->data['email'] = array('name' => 'email',
-            'id' => 'email',
-            'type' => 'text',
-            'value' => $user_info['email'],
-        );
-        $this->data['created_date'] = array('name' => 'created_date',
-            'id' => 'created_date',
-            'type' => 'text',
-            'value' => $user_info['created_date'],
-        );
-        $this->data['ip_address'] = array('name' => 'ip_address',
-            'id' => 'ip_address',
-            'type' => 'text',
-            'value' => $user_info['ip_address'],
-        );
-        $this->data['browser'] = array('name' => 'browser',
-            'id' => 'browser',
-            'type' => 'text',
-            'value' => $user_info['browser'],
-        );
-        $countries = $this->ion_auth->order_by('printable_name','asc')->get_all_countries()->result_array();
-        $this->data['countries'] = array();
-        foreach ($countries as $key => $country)
-        {
-            $this->data['countries'][$country['iso']] = $country['printable_name'];
-        }
-        $this->data['selected_country'] = $user_info['country'];
-
-        $base = base_url();
-        $css = "<link rel='stylesheet' href='{$base}css/form_design.css' />" ;
-        $this->template->set('css', $css);
-        
-        $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
-        $this->template->set('css', $css);
-        $this->template->set('menu_bar', 'design/menu_bar_admin');            
-        
-        $this->template->set('main_content', "auth/show_user");
-        $this->template->load("default_template", 'auth/show_user', $this->data);        
-    }
-
     function _get_csrf_nonce()
     {
         $this->load->helper('string');
@@ -966,7 +595,10 @@ class Auth extends CI_Controller
             redirect('auth/login', 'refresh');
         }
         $this->data['project_id'] = $this->session->userdata('project_id');
-        $this->template->set('menu_bar', 'design/configuration_menubar');
+        $base = base_url();        
+        $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+        $this->template->set('css', $css);
+        $this->template->set('menu_bar', 'design/menu_bar_member_demo');
         $this->template->load("default_template", "program/upload_project", $this->data);    
     }
     
@@ -1023,51 +655,6 @@ class Auth extends CI_Controller
             echo "Project successfully saved.";
         }
         
-    }
-    
-    /*
-     * Admin wants to delete a user
-     */
-    function delete_user($user_id)
-    {
-        if (!$this->ion_auth->logged_in())
-        {
-            redirect('auth/login', 'refresh');
-        }
-        //only admin can delete a user
-        if($this->ion_auth->is_admin())
-        {        
-            if ($this->input->post('delete_user_yes'))
-            {
-                //removing user from database
-                $this->ion_auth->delete_user($user_id);
-
-                //loading user deletion confirmation page
-                $this->data['user_id'] = $user_id;
-                $base = base_url();
-                $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;;
-                $this->template->set('css', $css);        
-                $this->template->set('menu_bar', 'design/menu_bar_admin');
-                $this->template->set('main_content', "auth/index");
-                $this->template->load("default_template", "auth/delete_user_successful", $this->data);
-            }
-            else if ($this->input->post('delete_user_no'))
-            {
-                //loading admin dashboard
-                redirect("auth", 'refresh');
-            }
-            else
-            {
-                //loading user deletion confirmation page
-                $this->data['user_id'] = $user_id;
-                $base = base_url();
-                $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />" ;;
-                $this->template->set('css', $css);        
-                $this->template->set('menu_bar', 'design/menu_bar_admin');
-                $this->template->set('main_content', "auth/index");
-                $this->template->load("default_template", "auth/delete_user_confirmation", $this->data);
-            }   
-        }    
     }
     
     function send_email_activation($id)
