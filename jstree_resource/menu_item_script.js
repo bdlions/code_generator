@@ -90,7 +90,7 @@ function generate_code()
                 });
                 if(is_action == 1)
                 {
-                    code = code +";"+"\n";
+                    code = code +";"+"\r\n";
                 }
                 
             });
@@ -132,7 +132,7 @@ function generate_code()
                     temp_text = temp_text.replace($(this).text().trim(), "");
                     while(totalSpacesForBracket[totalSpacesForBracketCounter] >= temp_text.length)
                     {
-                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\n";
+                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
                         totalSpacesForBracketCounter--;
                     }
 
@@ -156,28 +156,28 @@ function generate_code()
                 }
                 else if( $(this).text().trim() == "}")
                 {
-                    code = code + "\n"+ $(this).text();
+                    code = code + "\r\n"+ $(this).text();
                 }
                 else if($(this).text().trim() == "THEN" )
                 {
                     //if(code.lastIndexOf(")") != code.length-1)
                     //{
-                        code = code + " ) "+"\n";
+                        code = code + " ) "+"\r\n";
                     //}
                     //else{
-                    //    code = code + "\n";
+                    //    code = code + "\r\n";
                     //}
                     if($(this).next("li").text().trim() != "{")
                     {
                         temp_text = $(this).text();
                         temp_text = temp_text.replace($(this).text().trim(), "");
-                        code = code + temp_text+"{ "+"\n";
+                        code = code + temp_text+"{ "+"\r\n";
 
                         totalSpacesForBracket[++totalSpacesForBracketCounter] = temp_text.length;
                         spacesForBracket[++spacesForBracketCounter] = temp_text;
                     }
                     //skipping then inside code
-                    //code = code + "\n";
+                    //code = code + "\r\n";
                 }
                 else if($(this).text().trim().toLowerCase() == "else" )
                 {
@@ -185,17 +185,17 @@ function generate_code()
                     temp_text = temp_text.replace($(this).text().trim(), "");
                     while(totalSpacesForBracket[totalSpacesForBracketCounter] >= temp_text.length)
                     {
-                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\n";
+                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
                         totalSpacesForBracketCounter--;
                     }
 
-                    //code = code + "\n"+$(this).text().toLowerCase()+"\n";
-                    code = code +$(this).text().toLowerCase()+"\n";
+                    //code = code + "\r\n"+$(this).text().toLowerCase()+"\r\n";
+                    code = code +$(this).text().toLowerCase()+"\r\n";
                     if($(this).next("li").text().trim() != "{")
                     {
                         temp_text = $(this).text();
                         temp_text = temp_text.replace($(this).text().trim(), "");
-                        code = code + temp_text+"{ "+"\n";
+                        code = code + temp_text+"{ "+"\r\n";
 
                         totalSpacesForBracket[++totalSpacesForBracketCounter] = temp_text.length;
                         spacesForBracket[++spacesForBracketCounter] = temp_text;
@@ -203,7 +203,7 @@ function generate_code()
                 }
                 else
                 {
-                    code = code + $(this).text()+"\n";
+                    code = code + $(this).text()+"\r\n";
                 }
             }
 
@@ -212,7 +212,7 @@ function generate_code()
     //alert(code);
     while(spacesForBracketCounter > -1)
     {
-        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\n";
+        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
         //alert(code);
     }
     //alert("code is : "+code);
