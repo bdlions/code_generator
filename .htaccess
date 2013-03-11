@@ -12,7 +12,7 @@
  RewriteRule ^(.*)$ index.php/access_denied/$1 [PT,L]
 
  # Allow these directories and files to be displayed directly:
- RewriteCond $1 ^(index\.php|robots\.txt|opensearch\.xml|favicon\.ico|assets|forums|js|css|images|scripts|templates|upload)
+ RewriteCond $1 ^(index\.php|robots\.txt|opensearch\.xml|favicon\.ico|assets|forums|js|css|images|script|templates|xml|css\images)
 
  # No rewriting
  RewriteRule ^(.*)$ - [PT,L]
