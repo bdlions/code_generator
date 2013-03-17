@@ -703,7 +703,7 @@ $(function ()
                         alert("Please assign a number for the constant part.");
                         return;
                     }
-                    process_operator(selected_operator, "constant","arithmeticoperator",right_part_value,right_part_value,"true");
+                    process_operator(selected_operator, "constant","constant",right_part_value,right_part_value,"true");
                 }
                 $( this ).dialog( "close" );
             }
@@ -1147,6 +1147,62 @@ $(function ()
         }
     });
     
+    $( "#logical_operator_change_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 300,
+        modal: true,
+        title: 'Warning',
+        //setting buttons
+        buttons:
+        {
+            "No": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Yes": function()
+            {                
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+                changeLogicalOperator($("#logical_operator_change_combo option:selected").text().trim());
+            }            
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
+    $( "#arithmetic_operator_change_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 300,
+        modal: true,
+        title: 'Warning',
+        //setting buttons
+        buttons:
+        {
+            "No": function()
+            {
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+            },
+            "Yes": function()
+            {                
+                updateClientEndOperationCounter();
+                $( this ).dialog( "close" );
+                changeArithmeticOperator($("#arithmetic_operator_change_combo option:selected").text().trim());
+            }            
+        },
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
 });
 
 //user clicks anchor from expression from above code panel
@@ -1203,6 +1259,40 @@ function manageExpression($href) {
         }
         $('#condition_boolean_right_part_change_confirmation_div').dialog('open');
     }
+    
+    if(input_tag.getAttribute("value") == "logicalconnector")
+    {
+        if(input_tag.getAttribute("name").trim() == "AND")
+        {
+            $("select#logical_operator_change_combo")[0].selectedIndex = 0;
+        }
+        else if(input_tag.getAttribute("name").trim() == "OR")
+        {
+            $("select#logical_operator_change_combo")[0].selectedIndex = 1;
+        }
+        $('#logical_operator_change_div').dialog('open');
+    }
+    if(input_tag.getAttribute("value") == "arithmeticoperator")
+    {
+        if(input_tag.getAttribute("name").trim() == "+")
+        {
+            $("select#arithmetic_operator_change_combo")[0].selectedIndex = 0;
+        }
+        else if(input_tag.getAttribute("name").trim() == "-")
+        {
+            $("select#arithmetic_operator_change_combo")[0].selectedIndex = 1;
+        }
+        else if(input_tag.getAttribute("name").trim() == "*")
+        {
+            $("select#arithmetic_operator_change_combo")[0].selectedIndex = 2;
+        }
+        else if(input_tag.getAttribute("name").trim() == "/")
+        {
+            $("select#arithmetic_operator_change_combo")[0].selectedIndex = 3;
+        }
+        $('#arithmetic_operator_change_div').dialog('open');
+    }
+    
     
     return false;
 }
@@ -2128,7 +2218,137 @@ function updateConditionBooleanVariableMiddleOrRightPart()
                 $("input", $(this)).each(function () {
                     if($(this).attr("id") == selected_id){
                         $(this).removeAttr("value");
-                        $(this).attr("value",updated_anchor_text);
+                        $(this).attr("value",current_anchor_updated_code);
+                    }
+                });
+            });
+            //updating parameters table
+            document.getElementById("parameters_table").innerHTML = "";
+        }
+    });
+}
+
+function changeLogicalOperator(selectedItem)
+{
+    var selected_id = "";
+    var current_anchor_updated_text = "";
+    var current_anchor_updated_code = "";
+    $("a", $("#changing_stmt")).each(function () 
+    {
+        if ($(this).attr("class")) {
+            //updating expression in natural language panel
+            selected_id = $(this).attr("id");
+            if(selectedItem == "OR")
+            {
+                current_anchor_updated_text = " OR ";
+                current_anchor_updated_code = " || ";
+                $(this).attr("title", 'logical_connector_or');
+            }
+            else if(selectedItem == "AND")
+            {
+                current_anchor_updated_text = " AND ";
+                current_anchor_updated_code = " && ";
+                $(this).attr("title", 'logical_connector_and');
+            }            
+            var $custom_anchor = $(this);
+            $custom_anchor.html($custom_anchor.html().substring(0,$custom_anchor.html().lastIndexOf(">")+1)+current_anchor_updated_text);
+            $("input", $(this)).each(function () {
+                $(this).attr("name", current_anchor_updated_text);
+
+            });
+            //updating expression on left panel
+            $("a", $("#selectable .ui-selected")).each(function ()
+            {
+                if($(this).attr("id") == selected_id){
+                    $(this).html($custom_anchor.html());
+                }
+                $(this).removeAttr("onclick");
+                $(this).removeAttr("class");
+            });
+        }
+    });
+    //updating code panel
+    $("a", $("#code_stmt")).each(function ()
+    {
+        if ($(this).attr("id") == selected_id)
+        {
+            $(this).text(current_anchor_updated_code);                               
+            //updating code on left panel
+            $("div",  $('#selectable .ui-selected')).each(function ()
+            {
+                $("input", $(this)).each(function () {
+                    if($(this).attr("id") == selected_id){
+                        $(this).removeAttr("value");
+                        $(this).attr("value",current_anchor_updated_code);
+                    }
+                });
+            });
+            //updating parameters table
+            document.getElementById("parameters_table").innerHTML = "";
+        }
+    });
+}
+
+function changeArithmeticOperator(selectedItem)
+{
+    var selected_id = "";
+    var current_anchor_updated_text = "";
+    var current_anchor_updated_code = "";
+    $("a", $("#changing_stmt")).each(function () 
+    {
+        if ($(this).attr("class")) {
+            //updating expression in natural language panel
+            selected_id = $(this).attr("id");
+            if(selectedItem == "+")
+            {
+                current_anchor_updated_text = " + ";
+                current_anchor_updated_code = " + ";
+            }
+            else if(selectedItem == "-")
+            {
+                current_anchor_updated_text = " - ";
+                current_anchor_updated_code = " - ";
+            } 
+            else if(selectedItem == "*")
+            {
+                current_anchor_updated_text = " * ";
+                current_anchor_updated_code = " * ";
+            }
+            else if(selectedItem == "/")
+            {
+                current_anchor_updated_text = " / ";
+                current_anchor_updated_code = " / ";
+            }
+            var $custom_anchor = $(this);
+            $custom_anchor.html($custom_anchor.html().substring(0,$custom_anchor.html().lastIndexOf(">")+1)+current_anchor_updated_text);
+            $("input", $(this)).each(function () {
+                $(this).attr("name", current_anchor_updated_text);
+
+            });
+            //updating expression on left panel
+            $("a", $("#selectable .ui-selected")).each(function ()
+            {
+                if($(this).attr("id") == selected_id){
+                    $(this).html($custom_anchor.html());
+                }
+                $(this).removeAttr("onclick");
+                $(this).removeAttr("class");
+            });
+        }
+    });
+    //updating code panel
+    $("a", $("#code_stmt")).each(function ()
+    {
+        if ($(this).attr("id") == selected_id)
+        {
+            $(this).text(current_anchor_updated_code);                               
+            //updating code on left panel
+            $("div",  $('#selectable .ui-selected')).each(function ()
+            {
+                $("input", $(this)).each(function () {
+                    if($(this).attr("id") == selected_id){
+                        $(this).removeAttr("value");
+                        $(this).attr("value",current_anchor_updated_code);
                     }
                 });
             });

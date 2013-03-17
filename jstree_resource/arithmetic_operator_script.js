@@ -119,7 +119,7 @@ function process_operator(selected_operator, name,value,language,code, is_arithm
                 
             }
             $changing_stmt_anchor_list = $changing_stmt_anchor_list + $(this).prop('outerHTML');
-            $changing_stmt_anchor_list = $changing_stmt_anchor_list + "<a style='cursor:pointer;' id="+id1+"> <input style='' value='"+selected_operator_value_tag+"' name="+selected_operator+" type='hidden'> "+selected_operator+" </a>";
+            $changing_stmt_anchor_list = $changing_stmt_anchor_list + "<a onclick='manageExpression(this)' style='cursor:pointer;' id="+id1+"> <input style='' value='"+selected_operator_value_tag+"' name="+selected_operator+" type='hidden'> "+selected_operator+" </a>";
             $changing_stmt_anchor_list = $changing_stmt_anchor_list + "<a "+title_attribute+" onclick='manageExpression(this)' style='cursor:pointer;' id="+id2+"> <input style='' value="+value+" name="+name+" type='hidden'> "+language+" </a>";
             
         }

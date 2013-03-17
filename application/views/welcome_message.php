@@ -935,3 +935,33 @@ $(document).ready(function()
         </tr>         
     </table>
 </div>
+
+<div id="logical_operator_change_div" >
+    <table>        
+        <tr>
+            <td style="">Select Logical Operator:</td>
+            <td style="">
+                <select name="logical_operator_change_combo" id="logical_operator_change_combo">
+                    <option value="AND">AND</option>
+                    <option value="OR">OR</option>
+                </select>
+            </td>
+        </tr>              
+    </table> 
+</div>
+
+<div id="arithmetic_operator_change_div" >
+    <table>        
+        <tr>
+            <td style="">Select Arithmetic Operator:</td>
+            <td style="">
+                <select name="arithmetic_operator_change_combo" id="arithmetic_operator_change_combo">
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                    <option value="*">*</option>
+                    <option value="/">/</option>
+                </select>
+            </td>
+        </tr>              
+    </table> 
+</div>
