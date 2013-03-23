@@ -1203,6 +1203,19 @@ $(function ()
         }
     });
     
+    $( "#upload_project_div" ).dialog(
+    {
+        //setting some properties
+        autoOpen: false,
+        width: 300,
+        modal: true,
+        title: 'Warning',
+        close: function()
+        {
+            updateClientEndOperationCounter();       
+        }
+    });
+    
 });
 
 //user clicks anchor from expression from above code panel

@@ -251,54 +251,6 @@ class Welcome extends CI_Controller
 
     }
     
-    function upload_project()
-    {
-        
-        if (!$this->ion_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect('auth/login', 'refresh');
-        }
-        $project_id = $this->session->userdata('project_id'); 
-        if($this->input->post('cancel'))
-        {
-            $redirect_path = "welcome/load_project/".$project_id;
-            redirect($redirect_path, 'refresh');
-        }
-        else
-        {
-            $config['upload_path'] = './project/';
-            $config['allowed_types'] = 'txt';
-            $config['max_size'] = '5000';
-            $config['file_name'] = $project_id. ".txt";
-            $config['overwrite'] = TRUE;
-
-            $this->load->library('upload', $config);
-
-            if (!$this->upload->do_upload()) 
-            {
-                $error = array('error' => $this->upload->display_errors());
-                $this->data['error'] = $error;
-                $this->template->set('menu_bar', 'design/configuration_menubar');
-                $this->template->load("default_template", 'program/upload_project', $this->data);
-            } 
-            else 
-            {
-                $data = array('upload_data' => $this->upload->data());
-                $project_content = read_file('./project/'.$this->session->userdata('project_id').'.txt');
-                if($project_content != false){
-                    $data = array(
-                        'project_content' => $project_content,
-                        'project_content_backup' => $project_content
-                    );
-                    $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
-                }
-                $redirect_path = "welcome/load_project/".$project_id;
-                redirect($redirect_path, 'refresh');
-            }
-        }
-    }
-    
     /*
      * This controller is called when user presses save button from variable creation pop up dialog
      * This method calls ion_auth model to create a new variable

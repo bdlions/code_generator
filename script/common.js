@@ -37,6 +37,23 @@ function set_project_variables(variable_list)
     }
 }
 
+function get_variable_info(variable_id)
+{
+    updateClientEndOperationCounter();
+    var variable = new Variable();            
+    for(var counter = 0 ; counter < project_variable_list.length ; counter++)
+    {
+        if(project_variable_list[counter].variable_id == variable_id)
+        {
+            variable.setVariableId(project_variable_list[counter].variable_id);
+            variable.setVariableName(project_variable_list[counter].variable_name);
+            variable.setVariableType(project_variable_list[counter].variable_type);
+            variable.setVariableValue(project_variable_list[counter].variable_value);
+        }
+    }
+    return variable;
+}
+
 function updateClientEndOperationCounter()
 {
     clientEndOperationCounter++;

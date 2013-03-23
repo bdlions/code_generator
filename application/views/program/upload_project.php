@@ -1,5 +1,5 @@
 <?php if(isset($error)) echo $error['error'] ?>
-<?php echo form_open_multipart('welcome/upload_project');?>
+<?php echo form_open_multipart('project/post_upload_project');?>
     <table>
         <tr>
             <td >     

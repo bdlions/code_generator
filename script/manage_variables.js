@@ -107,4 +107,51 @@ function button_add_variable_cancel_pressed()
     $('#add_variables_div').dialog("close");
 }
 
-
+/*
+ * Before deleting a variable this method checks whether this variable is used in program or not
+ **/
+function is_variable_used_delete_button_clicked(variable_id)
+{
+    updateClientEndOperationCounter();
+    var is_variable_used = false;
+    //getting variable info
+    var variable = get_variable_info(variable_id);
+    $('#delete_variable_variable_id').val(variable_id);
+    $('#delete_variable_project_left_panel_content').val($("#selectable").html());
+    $('#selectable').each(function()
+    {
+        $("li", $(this)).each(function ()
+        {
+            $("a", $(this)).each(function ()
+            {
+               $("input", $(this)).each(function ()
+                {
+                    if($(this).attr("value") == "variable")
+                    {
+                        if($(this).attr("name") == variable.variable_name)
+                        {
+                            is_variable_used = true;
+                        }
+                    }
+                });
+            });
+        });
+    });
+    if(is_variable_used == true)
+    {
+        alert("You have used this variable. You will not be able to delete it.");
+        return false;
+    }
+    else
+    {
+        if (confirm('Are you sure you want to delete this variable?')) 
+        {
+            return true;
+        } 
+        else 
+        {
+            return false;
+        }
+        
+    }    
+}

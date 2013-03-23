@@ -7,11 +7,7 @@
             <a onclick="save()">Save</a>
             <a onclick="save_as()">Save As</a>
             <a onclick="download_project()">Download Project</a>
-            
-            <?php
-                echo anchor('auth/upload_project_left_panel', 'Upload Project');                
-            ?>
-        
+            <a onclick="upload_project()">Upload Project</a>            
         </ul>
     </li>
     <li>

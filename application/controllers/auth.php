@@ -587,21 +587,6 @@ class Auth extends CI_Controller
         $this->template->load("default_template", "program/upload_configuration_file", $this->data);    
     }
     
-    function upload_project_left_panel()
-    {
-        if (!$this->ion_auth->logged_in())
-        {
-            //redirect them to the login page
-            redirect('auth/login', 'refresh');
-        }
-        $this->data['project_id'] = $this->session->userdata('project_id');
-        $base = base_url();        
-        $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
-        $this->template->set('css', $css);
-        $this->template->set('menu_bar', 'design/menu_bar_member_demo');
-        $this->template->load("default_template", "program/upload_project", $this->data);    
-    }
-    
     function delete_project($project_id)
     {
         if (!$this->ion_auth->logged_in())

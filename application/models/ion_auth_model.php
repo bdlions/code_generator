@@ -1460,19 +1460,6 @@ class Ion_auth_model extends CI_Model {
         $this->db->update($this->tables['PROJECT_INFO'], $data);
     }
 
-    
-    public function get_project_variables() {
-        if (isset($this->_ion_where)) {
-            foreach ($this->_ion_where as $where) {
-                $this->db->where($where);
-            }
-
-            $this->_ion_where = array();
-        }
-        $this->response = $this->db->select('*')->from($this->tables['VARIABLE_LIST_TABLE'])->join($this->tables['VARIABLES_PROJECTS'], 'variable_list.variable_id = variables_projects.variable_id')->get();
-        return $this;
-    }
-
     public function get_all_countries() {
         $this->trigger_events('get_all_countries');
 
@@ -1543,7 +1530,7 @@ class Ion_auth_model extends CI_Model {
     {
         return $this->global_user_info;        
     }
-    ///////////////////////////////////////// project variable related query starts///////////////////////////////
+    //---------------------- project variable related queries start ------------------------------
     /*
      * This method checks whether a variable name under a project exists or not.
      * @return 1 if variable already exists otherwiswe returns 0
@@ -1569,7 +1556,8 @@ class Ion_auth_model extends CI_Model {
      * This method adds a new variable
      * @paramete variable infromation
      */
-    public function create_variable($additional_variable_data = array(), $additional_project_data = array()) {
+    public function create_variable($additional_variable_data = array(), $additional_project_data = array()) 
+    {
         $this->trigger_events('pre_register');
         $this->trigger_events('extra_set');
         $this->db->insert($this->tables['VARIABLE_LIST_TABLE'], $additional_variable_data);
@@ -1586,7 +1574,8 @@ class Ion_auth_model extends CI_Model {
     /*
      * This method removes variables from a project
      */
-    function delete_project_variable_map() {
+    function delete_project_variable_map() 
+    {
         if (isset($this->_ion_where)) {
             foreach ($this->_ion_where as $where) {
                 $this->db->where($where);
@@ -1596,11 +1585,39 @@ class Ion_auth_model extends CI_Model {
         }
         $this->db->delete($this->tables['VARIABLES_PROJECTS']);
     }
-    
+    /*
+     * This method removes variable from variables_projects table
+     */
+    function delete_project_variable() 
+    {
+        if (isset($this->_ion_where)) {
+            foreach ($this->_ion_where as $where) {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+        $this->db->delete($this->tables['VARIABLES_PROJECTS']);      
+    }
+    /*
+     * This method removes variable from variable_list table
+     */
+    function delete_variable() 
+    {
+        if (isset($this->_ion_where)) {
+            foreach ($this->_ion_where as $where) {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+        $this->db->delete($this->tables['VARIABLE_LIST_TABLE']);        
+    }
     /*
      * This method add one project variable to another project (cloning project) 
      */
-    public function clone_project_variable($additional_variable_data = array(), $additional_project_data = array()) {
+    public function clone_project_variable($additional_variable_data = array(), $additional_project_data = array()) 
+    {
         $this->trigger_events('pre_register');
         $this->trigger_events('extra_set');
         $this->db->insert($this->tables['VARIABLE_LIST_TABLE'], $additional_variable_data);
@@ -1612,7 +1629,23 @@ class Ion_auth_model extends CI_Model {
         );
         $this->db->insert($this->tables['VARIABLES_PROJECTS'], $data);
     }
-    ///////////////////////////////////////// project variable related query ends///////////////////////////////
+    
+    /*
+     * This method returns variable list of a project
+     */
+    public function get_project_variables() 
+    {
+        if (isset($this->_ion_where)) {
+            foreach ($this->_ion_where as $where) {
+                $this->db->where($where);
+            }
+
+            $this->_ion_where = array();
+        }
+        $this->response = $this->db->select('*')->from($this->tables['VARIABLE_LIST_TABLE'])->join($this->tables['VARIABLES_PROJECTS'], 'variable_list.variable_id = variables_projects.variable_id')->get();
+        return $this;
+    }
+    //---------------------- project variable related queries end ------------------------------
     
     /**
         * logged_in

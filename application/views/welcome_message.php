@@ -706,7 +706,7 @@ $(document).ready(function()
         <tr>
             <td width="100%" height="100%" align='center'>
                 <!--downloading project-->
-                <?php echo form_open("CodeProcess/download_project");?>
+                <?php echo form_open("project/download_project");?>
                      <label >File Name</label>
                     <input type="text" id="project_content_file_name" name="project_content_file_name" value=""/>
                     <input type="submit" id="download_project_save_button" value="Save" onclick="download_project_save_button_clicked()"/>
@@ -855,7 +855,9 @@ $(document).ready(function()
             <td>Variable Name</td>
             <td>Variable Type</td>
             <td>Variable Value</td>
-        </tr>                   
+            <td>Delete</td>
+        </tr> 
+        <?php echo form_open('project/delete_variable');?>                
         <?php
             foreach ($custom_variables as $cv) 
             {
@@ -863,9 +865,15 @@ $(document).ready(function()
                 echo "<td>{$cv->variable_name}</td>";
                 echo "<td>{$cv->variable_type}</td>";
                 echo "<td>{$cv->variable_value}</td>";
+                echo "<td>
+                <input type='submit' id='button_delete_variable_{$cv->variable_id}' name='button_delete_variable_{$cv->variable_id}' value='Delete' onclick='return is_variable_used_delete_button_clicked({$cv->variable_id})'/>
+                </td>";
                 echo "</tr>";
             }
         ?>  
+        <input type='hidden' id='delete_variable_variable_id' name='delete_variable_variable_id' value=''/>
+        <input type='hidden' id='delete_variable_project_left_panel_content' name='delete_variable_project_left_panel_content' value=''/>                
+        <?php echo form_close();?>
     </table>
 </div>
 
@@ -963,5 +971,26 @@ $(document).ready(function()
                 </select>
             </td>
         </tr>              
+    </table> 
+</div>
+
+<div id="upload_project_div" >
+    <table>        
+        <?php echo form_open("project/upload_project");?>
+        <tr>
+            <td>                
+                <label >Do you want to save your current project?</label><br/>
+                <input type="hidden" id="upload_project_project_left_panel_content" name="upload_project_project_left_panel_content" value=""/>
+            </td>
+        </tr>
+        <tr>
+            <td style="float:right;">
+                <input type="submit" id="button_no_upload_project" value="No" onclick="return button_no_clicked_upload_project()"/>
+            </td>
+            <td style="float:right;">
+                <input type="submit" id="button_yes_upload_project" value="Yes" onclick="return button_yes_clicked_upload_project()"/>                    
+            </td>            
+        </tr>
+        <?php echo form_close();?>
     </table> 
 </div>

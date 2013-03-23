@@ -810,257 +810,6 @@ function delete_item()
     return false;
 }
 
-/*function delete_item()
-{
-    var start_if_total_spaces = -1;
-    var start_else_total_spaces = -1;
-    var end_flag = 0;
-    var delete_start_marker = -1;
-    var delete_end_marker = -1;
-
-    var is_allowed_delete = 1;
-
-    var current_selected_segment = "";
-
-    var then_else_removal_index = -1;
-    var then_else_removal_total_spaces = -1;
-
-    var start = 1;
-    
-     $('#selectable').each(function()
-     {
-        $("li", $(this)).each(function ()
-        {
-            if($(this).text().trim().toLowerCase() == "if")
-            {
-                current_selected_segment = "if";
-                if ($(this).attr("class") == "ui-widget-content ui-selected")
-                {
-                    start_if_total_spaces = $(this).text().length - $(this).text().trim().length;
-                    if(start > 1 && start_if_total_spaces > 0)
-                    {
-                         var starting_space = "";
-                         for(var i = 0 ; i < start_if_total_spaces ; i++){
-                            starting_space = starting_space + "&nbsp;";
-                         }
-                         $(this).before("<li class='ui-widget-content'>"+starting_space+"Click here to edit action</li>");
-                         start++;
-                    }
-                    delete_start_marker = start;
-                    //alert(start);
-
-                }
-                else
-                {
-                    if(end_flag == 0)
-                    {
-                       var total_spaces = $(this).text().length - $(this).text().trim().length;
-                        if(total_spaces < start_if_total_spaces || (total_spaces == start_if_total_spaces && $(this).text().trim().toLowerCase() == "if"))
-                        {
-                            delete_end_marker = start - 1;
-                            //alert(start - 1);
-                            end_flag = 1;
-                        }
-                    }
-                }
-            }
-            else if($(this).text().trim().toLowerCase() == "else")
-            {
-                current_selected_segment = "else";
-                if ($(this).attr("class") == "ui-widget-content ui-selected")
-                {
-                    start_else_total_spaces = $(this).text().length - $(this).text().trim().length;
-                    delete_start_marker = start;
-                    //alert(start);
-
-                }
-                else
-                {
-                    if(end_flag == 0)
-                    {
-                       var total_spaces = $(this).text().length - $(this).text().trim().length;
-                        if(total_spaces <= start_else_total_spaces)
-                        {
-                            delete_end_marker = start - 1;
-                            //alert(start - 1);
-                            end_flag = 1;
-                        }
-                    }
-                }
-            }
-            else if($(this).text().trim() == "THEN" )
-            {
-                current_selected_segment = "THEN";
-                if($(this).attr("class") == "ui-widget-content ui-selected")
-                {
-                    alert("You are not allowed to remove THEN expression.");
-                    is_allowed_delete = 0;
-                    return false;
-                }
-
-            }
-            else
-            {
-                //user selects a condition to delete
-                if($(this).attr("class") == "ui-widget-content ui-selected" && current_selected_segment.toLowerCase() == "if" )
-                {
-                    //selected condition is yet assigned.
-                    if($(this).text().trim() == "Click here to edit condition")
-                    {
-                        alert("You are not allowed to remove an empty condition");
-                    }
-                    else
-                    {
-                       var total_initial_spaces = 0;
-                       //retrieving total spaces before the condition
-                       $("a", $(this)).each(function ()
-                        {
-                            if($(this).attr("id") == "ssaid")
-                            {
-                                total_initial_spaces = $(this).text().length;
-                            }
-                        }); 
-                        var initial_spaces = "";
-                        for(i = 0 ; i < total_initial_spaces ; i++){
-                            initial_spaces = initial_spaces + "&nbsp;";
-                        }
-                        //appending an empty condition
-                        $(this).before("<li class='ui-widget-content'>"+initial_spaces+"Click here to edit condition</li>");
-                        //removing current selected condition
-                        $(this).remove();
-                        alert("Your selected condition is successfully removed.");
-                        //clearing natural language panel, code panel, parameter table and tree
-                        $('#changing_stmt').html("");
-                        $('#code_stmt').html("");
-                        $('#parameters_table').html("");
-                        $("li", $("#demo1")).each(function ()
-                        {
-                            $(this).hide();
-                        });
-                    }                    
-                    
-                    is_allowed_delete = 0;
-                    return false;
-                }
-                else if($(this).attr("class") == "ui-widget-content ui-selected")
-                {
-                    then_else_removal_total_spaces = $(this).text().length - $(this).text().trim().length;
-                    then_else_removal_index = start;
-                    end_flag = 1;
-                    delete_start_marker = start;
-                    delete_end_marker = start;
-                    return false;
-                }
-            }
-            start++;
-        });
-    });
-
-    //alert("delete_start_marker"+delete_start_marker+";delete_end_marker"+delete_end_marker);
-
-    if(then_else_removal_index > -1)
-    {
-        var parent_node_index = -1;
-        var node_counter = 1;
-        $('#selectable').each(function()
-         {
-            $("li", $(this)).each(function ()
-            {
-                if( $(this).text().trim() != "{" || $(this).text().trim() != "}" || $(this).text().trim() != "(" || $(this).text().trim() != ")" )
-                {
-                    var total_spaces = $(this).text().length - $(this).text().trim().length;
-                    if(total_spaces < then_else_removal_total_spaces && node_counter < then_else_removal_index)
-                    {
-                        parent_node_index = node_counter;
-                    }
-                }
-                node_counter++;
-            });
-         });
-         //alert("parent node index: "+parent_node_index+ " and then_else_removal_index:"+then_else_removal_index);
-         node_counter = 1;
-         var total_nodes = 0;
-         var flag = 1;
-         $('#selectable').each(function()
-         {
-            $("li", $(this)).each(function ()
-            {
-                if( $(this).text().trim() != "{" || $(this).text().trim() != "}" || $(this).text().trim() != "(" || $(this).text().trim() != ")" )
-                {
-                    if(node_counter > parent_node_index && flag == 1)
-                    {
-                        var node_child_total_spaces = $(this).text().length - $(this).text().trim().length;
-                        //alert("node:"+$(this).text());
-                        //alert("child space:"+node_child_total_spaces+" and parent space : "+then_else_removal_total_spaces);
-                        if(node_child_total_spaces == then_else_removal_total_spaces){
-                            total_nodes++;
-                        }
-                        else if(node_child_total_spaces <= then_else_removal_total_spaces)
-                        {
-                            flag = 0;
-                        }
-                    }
-                }
-                node_counter++;
-            });
-         });
-         //alert("total nodes:"+total_nodes);
-    }
-
-    if(total_nodes == 1)
-    {
-        $('#selectable').each(function()
-        {
-            $("li", $(this)).each(function ()
-            {
-                if ($(this).attr("class") == "ui-widget-content ui-selected")
-                {
-                    $(this).remove();        
-                }
-            });
-        });
-        alert("Your selected action is successfully removed.");
-        return;
-        
-        //alert("You are not allowed to remove expression");
-        //is_allowed_delete = 0;
-        //return false;
-    }
-
-    //alert("delete_start_marker:"+delete_start_marker);
-    //alert("delete_end_marker:"+delete_end_marker);
-
-    if(is_allowed_delete == 1)
-    {
-        if(end_flag == 0)
-        {
-            delete_end_marker = start - 1;
-            //alert(start - 1);
-        }
-
-        //since we have removed whole expression on the left panel we have to add defaut expreesion
-        if(delete_start_marker == 1 && delete_end_marker == start-1)
-        {
-            $("#selectable li:last-child").after("<li class='ui-widget-content'>Click here to edit block</li>");
-        }
-
-
-        var delete_marker = 1;
-        $('#selectable').each(function()
-         {
-            $("li", $(this)).each(function ()
-            {
-                if(delete_marker >= delete_start_marker && delete_marker <= delete_end_marker)
-                {
-                    $(this).remove();
-                }
-                delete_marker++;
-            });
-         });
-    }
-    return false;
-}/*
-
 /*
  * User selects menu item to save project left panel content
  **/
@@ -1077,7 +826,7 @@ function download_project()
     //saving project left panel into server
     $.ajax({
         type: "POST",
-        url: "../../CodeProcess/save_project_left_panel",
+        url: "../../project/save_project_left_panel_and_variables",
         data: {
             code: left_panel_content
         },
@@ -1096,6 +845,21 @@ function download_project()
             $.unblockUI();
         }
     }); 
+}
+
+function upload_project()
+{
+    $('#upload_project_div').dialog('open');
+}
+function button_yes_clicked_upload_project()
+{
+    $('#upload_project_project_left_panel_content').val($("#selectable").html());
+    return true;
+}
+function button_no_clicked_upload_project()
+{
+    $('#upload_project_project_left_panel_content').val("");
+    return true;
 }
 
 /*
