@@ -65,6 +65,7 @@ class Ion_auth_model extends CI_Model {
      * @var array
      * */
     public $_ion_where = array();
+    public $_ion_where_in = array();
     
     public $_ion_like = array();
     public $_ion_or_like = array();
@@ -725,6 +726,15 @@ class Ion_auth_model extends CI_Model {
 
         array_push($this->_ion_where, $where);
 
+        return $this;
+    }
+    
+    public function where_in($where_in, $value = NULL) {
+        $this->trigger_events('where_in');
+        if (!is_array($where_in)) {
+            $where_in = array($where_in => $value);
+        }
+        array_push($this->_ion_where_in, $where_in);
         return $this;
     }
     
@@ -1610,6 +1620,28 @@ class Ion_auth_model extends CI_Model {
             }
 
             $this->_ion_where = array();
+        }
+        $this->db->delete($this->tables['VARIABLE_LIST_TABLE']);        
+    }
+    function delete_project_variables() 
+    {
+        if (isset($this->_ion_where_in)) {
+            foreach ($this->_ion_where_in as $where_in) {
+                $key = array_keys($where_in);
+                $this->db->where_in($key[0],$where_in[$key[0]]);
+            }
+            $this->_ion_where_in = array();
+        }
+        $this->db->delete($this->tables['VARIABLES_PROJECTS']);      
+    }
+    function delete_variables() 
+    {
+        if (isset($this->_ion_where_in)) {
+            foreach ($this->_ion_where_in as $where_in) {
+                $key = array_keys($where_in);
+                $this->db->where_in($key[0],$where_in[$key[0]]);
+            }
+            $this->_ion_where_in = array();
         }
         $this->db->delete($this->tables['VARIABLE_LIST_TABLE']);        
     }
