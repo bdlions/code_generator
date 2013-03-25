@@ -129,7 +129,7 @@ class Admin extends CI_Controller {
      * New user will be created
      */
 
-    function create_user() 
+    /*function create_user() 
     {
         //only admin has the access to this method
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) {
@@ -208,6 +208,105 @@ class Admin extends CI_Controller {
             }
 
             $base = base_url();
+            $css = "<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
+            $this->template->set('css', $css);
+            $this->template->set('menu_bar', 'design/menu_bar_admin');
+            $this->template->load("default_template", 'admin/create_user', $this->data);
+        }
+    }*/
+    
+    //create a new user
+    function create_user() 
+    {
+        //only admin has the access to this method
+        if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin()) 
+        {
+            redirect('admin/login', 'refresh');
+        }
+        $this->data['title'] = "Create User";
+        $this->form_validation->set_error_delimiters("<div style='color:red'>", '</div>');
+
+        //validate form input
+        $this->form_validation->set_rules('user_name', 'User Name', 'required|xss_clean');
+        $this->form_validation->set_rules('first_name', 'First Name', 'required|xss_clean');
+        $this->form_validation->set_rules('last_name', 'Last Name', 'required|xss_clean');
+        $this->form_validation->set_rules('email', 'Email Address', 'required|valid_email|matches[email_confirm]');
+        $this->form_validation->set_rules('email_confirm', 'Email Address Confirmation', 'required|valid_email');
+        $this->form_validation->set_rules('password', 'Password', 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]|callback_password_check');
+        $this->form_validation->set_rules('password_confirm', 'Password Confirmation', 'required');
+        $this->form_validation->set_rules('countries', 'Country', 'required|xss_clean');
+
+        if ($this->form_validation->run() == true) 
+        {
+            $username = $this->input->post('user_name');
+            $email = $this->input->post('email');
+            $password = $this->input->post('password');
+
+            $additional_data = array(
+                'first_name' => $this->input->post('first_name'),
+                'last_name' => $this->input->post('last_name'),
+                'country' => $this->input->post('countries'),
+            );
+        }
+        if ($this->form_validation->run() == true && $this->ion_auth->register($username, $password, $email, $additional_data)) 
+        {
+            $base = base_url();
+            $this->session->set_flashdata('message', "User account successfully created.");
+            $css = "<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
+            $this->template->set('css', $css);
+            $this->template->set('menu_bar', 'design/menu_bar_admin');
+            $this->data['message'] = "User account successfully created. An email has been sent to you to activate your account.";
+            $this->template->load("default_template", 'admin/create_user_complete', $this->data);
+        } 
+        else 
+        { //display the create user form
+            //set the flash data error message if there is one
+            $this->data['message'] = (validation_errors() ? validation_errors() : '');
+
+            $this->data['user_name'] = array('name' => 'user_name',
+                'id' => 'user_name',
+                'type' => 'text',
+                'value' => $this->form_validation->set_value('user_name'),
+            );
+            $this->data['first_name'] = array('name' => 'first_name',
+                'id' => 'first_name',
+                'type' => 'text',
+                'value' => $this->form_validation->set_value('first_name'),
+            );
+            $this->data['last_name'] = array('name' => 'last_name',
+                'id' => 'last_name',
+                'type' => 'text',
+                'value' => $this->form_validation->set_value('last_name'),
+            );
+            $this->data['email'] = array('name' => 'email',
+                'id' => 'email',
+                'type' => 'text',
+                'value' => $this->form_validation->set_value('email'),
+            );
+            $this->data['email_confirm'] = array('name' => 'email_confirm',
+                'id' => 'email_confirm',
+                'type' => 'text',
+                'value' => $this->form_validation->set_value('email_confirm'),
+            );
+            $this->data['password'] = array('name' => 'password',
+                'id' => 'password',
+                'type' => 'password',
+                'value' => $this->form_validation->set_value('password'),
+            );
+            $this->data['password_confirm'] = array('name' => 'password_confirm',
+                'id' => 'password_confirm',
+                'type' => 'password',
+                'value' => $this->form_validation->set_value('password_confirm'),
+            );
+
+            $countries = $this->ion_auth->order_by('printable_name', 'asc')->get_all_countries()->result_array();
+            $this->data['countries'] = array();
+            foreach ($countries as $key => $country) {
+                $this->data['countries'][$country['iso']] = $country['printable_name'];
+            }
+
+            $base = base_url();
+            //loading admin menu bar
             $css = "<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />";
             $this->template->set('css', $css);
             $this->template->set('menu_bar', 'design/menu_bar_admin');

@@ -4,7 +4,7 @@
     <div id="infoMessage"><?php echo $message; ?></div>
     <?php echo form_open('admin'); ?>
     <fieldset>
-        <legend>User update information</legend>
+        <legend>User information</legend>
         <table border="0" width="100%" >
             <tr>
                 <td><label>User Name:</label></td>

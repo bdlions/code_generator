@@ -193,6 +193,14 @@ class Welcome extends CI_Controller
             $this->data['external_file_content_error'] = $this->session->userdata('external_file_content_error');
             $this->session->set_userdata('external_file_content_error', "false");
         }
+        
+        $user_infos = $this->ion_auth->where('users.id',$this->session->userdata('user_id'))->users()->result_array();
+        if(count($user_infos) <= 0)
+        {
+            $user_info['username'] = 'Guest';
+        }
+        $user_info = $user_infos[0];
+        $this->data['user_info'] = $user_info;
         $this->data['external_variable_list'] = $external_variable_list;
         $this->data['external_variable_values'] = $external_variable_values; 
         $this->template->load("default_template", 'welcome_message', $this->data);
