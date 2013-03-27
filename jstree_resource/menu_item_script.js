@@ -90,7 +90,7 @@ function generate_code()
                 });
                 if(is_action == 1)
                 {
-                    code = code +";"+"\r\n";
+                    code = code +";"+getLineBreakSequence();
                 }
                 
             });
@@ -132,7 +132,7 @@ function generate_code()
                     temp_text = temp_text.replace($(this).text().trim(), "");
                     while(totalSpacesForBracket[totalSpacesForBracketCounter] >= temp_text.length)
                     {
-                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
+                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+getLineBreakSequence();
                         totalSpacesForBracketCounter--;
                     }
 
@@ -156,28 +156,28 @@ function generate_code()
                 }
                 else if( $(this).text().trim() == "}")
                 {
-                    code = code + "\r\n"+ $(this).text();
+                    code = code + getLineBreakSequence()+ $(this).text();
                 }
                 else if($(this).text().trim() == "THEN" )
                 {
                     //if(code.lastIndexOf(")") != code.length-1)
                     //{
-                        code = code + " ) "+"\r\n";
+                        code = code + " ) "+getLineBreakSequence();
                     //}
                     //else{
-                    //    code = code + "\r\n";
+                    //    code = code + getLineBreakSequence();
                     //}
                     if($(this).next("li").text().trim() != "{")
                     {
                         temp_text = $(this).text();
                         temp_text = temp_text.replace($(this).text().trim(), "");
-                        code = code + temp_text+"{ "+"\r\n";
+                        code = code + temp_text+"{ "+getLineBreakSequence();
 
                         totalSpacesForBracket[++totalSpacesForBracketCounter] = temp_text.length;
                         spacesForBracket[++spacesForBracketCounter] = temp_text;
                     }
                     //skipping then inside code
-                    //code = code + "\r\n";
+                    //code = code + getLineBreakSequence();
                 }
                 else if($(this).text().trim().toLowerCase() == "else" )
                 {
@@ -185,17 +185,17 @@ function generate_code()
                     temp_text = temp_text.replace($(this).text().trim(), "");
                     while(totalSpacesForBracket[totalSpacesForBracketCounter] >= temp_text.length)
                     {
-                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
+                        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+getLineBreakSequence();
                         totalSpacesForBracketCounter--;
                     }
 
-                    //code = code + "\r\n"+$(this).text().toLowerCase()+"\r\n";
-                    code = code +$(this).text().toLowerCase()+"\r\n";
+                    //code = code + getLineBreakSequence()+$(this).text().toLowerCase()+getLineBreakSequence();
+                    code = code +$(this).text().toLowerCase()+getLineBreakSequence();
                     if($(this).next("li").text().trim() != "{")
                     {
                         temp_text = $(this).text();
                         temp_text = temp_text.replace($(this).text().trim(), "");
-                        code = code + temp_text+"{ "+"\r\n";
+                        code = code + temp_text+"{ "+getLineBreakSequence();
 
                         totalSpacesForBracket[++totalSpacesForBracketCounter] = temp_text.length;
                         spacesForBracket[++spacesForBracketCounter] = temp_text;
@@ -203,7 +203,7 @@ function generate_code()
                 }
                 else
                 {
-                    code = code + $(this).text()+"\r\n";
+                    code = code + $(this).text()+getLineBreakSequence();
                 }
             }
 
@@ -212,7 +212,7 @@ function generate_code()
     //alert(code);
     while(spacesForBracketCounter > -1)
     {
-        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+"\r\n";
+        code = code +spacesForBracket[spacesForBracketCounter--]+"}"+getLineBreakSequence();
         //alert(code);
     }
     //alert("code is : "+code);
@@ -247,6 +247,11 @@ function generate_code()
         alert("Invalid expression to generate code."+error_message);
     }
 
+}
+
+function getLineBreakSequence()
+{
+    return "\n";
 }
 
 function add_block()

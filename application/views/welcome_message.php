@@ -979,7 +979,7 @@ $(document).ready(function()
         <?php echo form_open("project/upload_project");?>
         <tr>
             <td>                
-                <label >Do you want to save your current project?</label><br/>
+                <label >Do you want to keep your current changes?</label><br/>
                 <input type="hidden" id="upload_project_project_left_panel_content" name="upload_project_project_left_panel_content" value=""/>
             </td>
         </tr>

@@ -43,13 +43,14 @@ class CodeProcess extends CI_Controller
         $project_id = $this->session->userdata('project_id');
         $file_path = "./code/".$project_id.".txt";
         if (file_exists($file_path)) {
-            $content = file_get_contents($file_path);
-            if($content == "")
+            $content = "";
+            $lines = file($file_path); // gets file in array using new lines character
+            foreach($lines as $line)
             {
-                return;
+                $content = $content.$line."\r\n";
             }
             header("Content-Type:text/plain");
-            header("Content-Length: " . filesize($file_path));
+            //header("Content-Length: " . filesize($file_path));
             header("Content-Disposition: 'attachment'; filename=code.txt");
             echo $content;
         }
