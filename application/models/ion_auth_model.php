@@ -341,7 +341,7 @@ class Ion_auth_model extends CI_Model {
 
         $data = array(
             'activation_code' => $activation_code,
-            'is_inactivated_by_admin' => true,
+            'is_inactivated_by_admin' => false,
             'active' => 0
         );
 
