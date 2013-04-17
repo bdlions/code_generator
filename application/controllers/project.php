@@ -93,43 +93,58 @@ class Project extends CI_Controller
             {
                 $this->load->library('projectxmlparser');
                 $project_xml_object = $this->projectxmlparser->readXML();
-                $project_content = $project_xml_object->code;
-                if($project_content != false){
-                    $data = array(
-                        'project_content' => $project_content,
-                        'project_content_backup' => $project_content
-                    );
-                    $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
-                }
-                //deleting current variables of this project
-                $current_variable_ids = array();
-                $variable_counter = 0;
-                $custom_variables = $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->get_project_variables()->result();
-                foreach ($custom_variables as $custom_variable):
-                    $current_variable_ids[$variable_counter++] = $custom_variable->variable_id;
-                endforeach;
-                if($variable_counter > 0)
+                //user uploads a wrong project/file
+                if($project_xml_object == null)
                 {
-                    $this->ion_auth->where_in('variable_id',$current_variable_ids)->delete_project_variables();
-                    $this->ion_auth->where_in('variable_id',$current_variable_ids)->delete_variables();
+                    $error = array('error' => 'Please upload correct project.');
+                    $this->data['error'] = $error;
+                    $this->data['project_id'] = $this->session->userdata('project_id');
+                    $base = base_url();        
+                    $css ="<link rel='stylesheet' href='{$base}jstree_resource/menu_style.css' />"."<link rel='stylesheet' href='{$base}css/bluedream.css' />";
+                    $this->template->set('css', $css);
+                    $this->template->set('menu_bar', 'design/menu_bar_member_demo');
+                    $this->template->load("default_template", "program/upload_project", $this->data);
                 }
-                
-                //adding variables of uploaded file into this project
-                $custom_variables = $project_xml_object->variables;
-                foreach ($custom_variables as $custom_variable):
-                    $additional_variable_data = array(
-                        'variable_name' => $custom_variable->name,
-                        'variable_type' => $custom_variable->type,
-                        'variable_value' => $custom_variable->value,
-                    );
-                    $additional_project_data = array(
-                        'project_id' => $this->session->userdata('project_id'),
-                    );
-                    $this->ion_auth->create_variable($additional_variable_data, $additional_project_data);
-                endforeach;
-                
-                $redirect_path = "welcome/load_project/".$project_id;
-                redirect($redirect_path, 'refresh');
+                else
+                {
+                    $project_content = $project_xml_object->code;
+                    if($project_content != false){
+                        $data = array(
+                            'project_content' => $project_content,
+                            'project_content_backup' => $project_content
+                        );
+                        $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->update_project($data);
+                    }
+                    //deleting current variables of this project
+                    $current_variable_ids = array();
+                    $variable_counter = 0;
+                    $custom_variables = $this->ion_auth->where('project_id',$this->session->userdata('project_id'))->get_project_variables()->result();
+                    foreach ($custom_variables as $custom_variable):
+                        $current_variable_ids[$variable_counter++] = $custom_variable->variable_id;
+                    endforeach;
+                    if($variable_counter > 0)
+                    {
+                        $this->ion_auth->where_in('variable_id',$current_variable_ids)->delete_project_variables();
+                        $this->ion_auth->where_in('variable_id',$current_variable_ids)->delete_variables();
+                    }
+
+                    //adding variables of uploaded file into this project
+                    $custom_variables = $project_xml_object->variables;
+                    foreach ($custom_variables as $custom_variable):
+                        $additional_variable_data = array(
+                            'variable_name' => $custom_variable->name,
+                            'variable_type' => $custom_variable->type,
+                            'variable_value' => $custom_variable->value,
+                        );
+                        $additional_project_data = array(
+                            'project_id' => $this->session->userdata('project_id'),
+                        );
+                        $this->ion_auth->create_variable($additional_variable_data, $additional_project_data);
+                    endforeach;
+
+                    $redirect_path = "welcome/load_project/".$project_id;
+                    redirect($redirect_path, 'refresh');
+                }                
             }
         }
     }

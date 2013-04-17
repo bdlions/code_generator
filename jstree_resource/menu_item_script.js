@@ -54,7 +54,18 @@ function generate_code()
     {
         $(this).hide();
     });
-
+    for(var variable_counter = 0 ; variable_counter < project_variable_list.length ; variable_counter++)
+    {
+        var variable = project_variable_list[variable_counter];
+        if(variable.variable_type == "BOOLEAN")
+        {
+            code = code +"boolean "+variable.variable_name+" = "+variable.variable_value+";"+getLineBreakSequence();
+        }
+        else
+        {
+            code = code +"double "+variable.variable_name+" = "+variable.variable_value+";"+getLineBreakSequence();
+        }
+    }
     $('#selectable').each(function()
     {
         $("li", $(this)).each(function ()
